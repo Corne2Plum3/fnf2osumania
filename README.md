@@ -2,7 +2,7 @@
 
 ![cool_banner](https://user-images.githubusercontent.com/57914482/130650455-669ce1ab-e397-47ab-bf8e-7bd2493cecb9.jpg)
 
-Converts charts from Friday Night Funkin to osu!Mania maps, so you can play them in osu!
+Import Friday Night Funkin charts into your osu! game.
 
 ![usage_example](https://user-images.githubusercontent.com/57914482/130650521-66264c5a-c365-4f89-a630-4cd5be4133db.JPG)
 
