@@ -34,5 +34,7 @@ If you don't have this, the program will not work.
 
 Download the source code and run `main.py`.
 
+Learn how to use it [here](https://github.com/Corne2Plum3/fnf2osumania/wiki)
+
 ## Developping
 TODO
