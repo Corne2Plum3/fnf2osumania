@@ -1,0 +1,29 @@
+{
+    "app_name": "fnf2osu!mania converter",
+    "app_version": "1.0",
+    "colors": {
+        "red": "#ff4433",
+        "green": "#33ff33",
+        "link": "#0000ff",
+        "top_background": "#0088bb",
+        "title": "#bb1105"
+    },
+    "delete_files_when_cancel": 1,
+    "init": {
+        "song_title": "",
+        "song_artist": "",
+        "username": "",
+        "audio_1": "",
+        "audio_2": "",
+        "audio_1_volume": 100,
+        "audio_2_volume": 100,
+        "audio_offset": 0,
+        "meter": "4/4",
+        "unique_bpm": 1,
+        "unique_bpm_value": 120.0,
+        "difficulties": {},
+        "background": ""
+    },
+    "url_github": "https://youtu.be/dQw4w9WgXcQ",
+    "url_help": "https://youtu.be/dQw4w9WgXcQ"
+}
