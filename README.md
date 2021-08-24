@@ -7,9 +7,8 @@ Converts charts from Friday Night Funkin to osu!Mania maps, so you can play them
 ![usage_example](https://user-images.githubusercontent.com/57914482/130650521-66264c5a-c365-4f89-a630-4cd5be4133db.JPG)
 
 ## Status
-Why are you here???
-
-**Currently in heavy developpement, not really for public... Wait 24 hours please.**
+It just started, sorry for bugs (and my bad english).
+If you find a bug or a question, post an [issue](https://github.com/Corne2Plum3/fnf2osumania/issues).
 
 ## Required
 If you don't have this, the program will not work.
