@@ -1,16 +1,14 @@
 # fnf2osu!mania converter
 
+![cool_banner](https://user-images.githubusercontent.com/57914482/130650455-669ce1ab-e397-47ab-bf8e-7bd2493cecb9.jpg)
 
-*TODO cool_banner.jpg*
+Import Friday Night Funkin charts into your osu! game.
 
-Converts charts from Friday Night Funkin to osu!Mania maps, so you can play them in osu!
-
-*TODO usage_example.jpg*
+![usage_example](https://user-images.githubusercontent.com/57914482/130650521-66264c5a-c365-4f89-a630-4cd5be4133db.JPG)
 
 ## Status
-Why are you here???
-
-**Currently in heavy developpement, not really for public... Wait 24 hours please.**
+It just started, sorry for bugs (and my bad english).
+If you find a bug or a question, post an [issue](https://github.com/Corne2Plum3/fnf2osumania/issues).
 
 ## Required
 If you don't have this, the program will not work.
@@ -35,6 +33,8 @@ If you don't have this, the program will not work.
 *I really should improve that...*
 
 Download the source code and run `main.py`.
+
+Learn how to use it [here](https://github.com/Corne2Plum3/fnf2osumania/wiki)
 
 ## Developping
 TODO
