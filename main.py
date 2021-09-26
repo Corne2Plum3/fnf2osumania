@@ -1,3 +1,4 @@
+from crash_window import Crash_window
 from fnf_converter import Fnf_chart, Osu_map, Osz_converter, jsonRemoveExtraData
 from functools import partial
 import json
@@ -8,6 +9,7 @@ import tkinter.font as tkFont
 import tkinter.messagebox
 import threading
 from thread_with_trace import Thread_with_trace
+import traceback
 import webbrowser
 
 # init
@@ -21,6 +23,7 @@ with open("config.json", "r") as file:  # all settings from config.json
     difficulties = config_data["init"]["difficulties"]   # the dict of lists of 2 elements {"diff_name": [map_mode (str), fnf_json_path]}
     url_github = config_data["url_github"]  # link to the application's GitHub
     url_help = config_data["url_help"]  # link to get the documentation
+    verify_inputs = bool(config_data["verify_inputs"])  # 0 or 1 in the JSON, False or True in this program
 
 # widgets options lists
 map_mode_values = {
@@ -191,7 +194,6 @@ class Exporting_window:
             self.window.protocol("WM_DELETE_WINDOW", self.buttonCommand)  # when X button is pressed (does the same thing then the 'Cancel' button)
             self.window.mainloop()
       
-
 class Main_window:
     """
         Class object:
@@ -332,9 +334,9 @@ class Main_window:
             Return:
                 Nothing.
         """
-        global difficulties, no_selected_file_text
+        global difficulties, no_selected_file_text, verify_inputs
         
-        if self.verifyAllInputs() == True:  # verify is everything is okay
+        if verify_inputs == False or self.verifyAllInputs() == True:  # verify is everything is okay (or skip this process)
 
             # no constants settings
 
@@ -444,7 +446,7 @@ class Main_window:
             self.__is_open = True
 
             # 1. Create and init the window
-            self.window.title("app_name")  # set window title
+            self.window.title(app_name)  # set window title
             self.window.geometry("808x538")  # set window size
             self.window.resizable(width=False, height=False)  # the window can't be resized
 
@@ -1072,7 +1074,11 @@ def setFilePath(string_var):
         string_var.set(no_selected_file_text)
     return selected_file
 
-# objects
-root = Main_window()  # app window
-root.openWindow()
+# WHERE THE PROGRAM STARTS
+try:
+    root = Main_window()  # app window
+    root.openWindow()
+except:
+    error_window = Crash_window(traceback.format_exc())
+    error_window.openWindow()
 

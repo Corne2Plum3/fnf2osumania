@@ -1,9 +1,11 @@
 """
-Code from geeksforgeeks.org
+Code from geeksforgeeks.org (edited)
 Full link to the code: https://www.google.com/amp/s/www.geeksforgeeks.org/python-different-ways-to-kill-a-thread/amp
 """
 
+from crash_window import Crash_window
 import sys
+import traceback
 import trace
 import threading
 
@@ -13,9 +15,14 @@ class Thread_with_trace(threading.Thread):
         self.killed = False
  
     def start(self):
-        self.__run_backup = self.run
-        self.run = self.__run         
-        threading.Thread.start(self)
+        try:
+            self.__run_backup = self.run
+            self.run = self.__run         
+            threading.Thread.start(self)
+        except:  # to show an error message if something wrong happens here
+            print("F")
+            error_window = Crash_window(traceback.format_exc())
+            error_window.openWindow()
  
     def __run(self):
         sys.settrace(self.globaltrace)
