@@ -21,14 +21,14 @@ class Crash_window:
                 Nothing
         """
         # init the window
-        self.window.title(f'fnf2osumania converter crashed :(')  # set window title
+        self.window.title(f'fnf2osumania error')  # set window title
         self.window.geometry("746x425")  # set window size
         
         # place widgets
-        header = tk.Label(self.window, anchor="sw", justify="center", padx=4, pady=8, text=f'A fatal error occured... :(')
+        header = tk.Label(self.window, anchor="sw", justify="center", padx=4, pady=8, text=f'An error occured :(')
         header.grid(row=0, column=0, sticky="we")
 
-        body_message = tk.Message(self.window, anchor="nw", justify="left", padx=4, width=742, text="The following error occured from the program while running, and it crashed...\n\nIf this is the 1st time, verify your inputs and try again. If not, you should visit the GitHub for help, or open an new issue if needed, with the text error below.\n\n(you can close this window btw)")
+        body_message = tk.Message(self.window, anchor="nw", justify="left", padx=4, width=742, text="The following error occured from the program while running, and eventually it crashed...\n\nIf this is the 1st time, verify your inputs and try again. If not, you should visit the GitHub for help, or open an new issue if needed, with the text error below.")
         body_message.grid(row=1, column=0, sticky="we")
 
         error_text = tk.Text(self.window, padx=4, width=92, height=16)
