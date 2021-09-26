@@ -13,30 +13,34 @@ import traceback
 import webbrowser
 
 # init
-with open("config.json", "r") as file:  # all settings from config.json
-    config_data = json.loads(file.read())  # parse it as dict
+try:
+    with open("config.json", "r") as file:  # all settings from config.json
+        config_data = json.loads(file.read())  # parse it as dict
 
-    app_name = config_data["app_name"]
-    app_version = config_data["app_version"]  # version of the application
-    colors = config_data["colors"]  # dict with some colors used in the app
-    delete_files_when_cancel = config_data["delete_files_when_cancel"]  # if the cancel button is pressed, delete generated files? (0 or 1)
-    difficulties = config_data["init"]["difficulties"]   # the dict of lists of 2 elements {"diff_name": [map_mode (str), fnf_json_path]}
-    url_github = config_data["url_github"]  # link to the application's GitHub
-    url_help = config_data["url_help"]  # link to get the documentation
-    verify_inputs = bool(config_data["verify_inputs"])  # 0 or 1 in the JSON, False or True in this program
+        app_name = config_data["app_name"]
+        app_version = config_data["app_version"]  # version of the application
+        colors = config_data["colors"]  # dict with some colors used in the app
+        delete_files_when_cancel = config_data["delete_files_when_cancel"]  # if the cancel button is pressed, delete generated files? (0 or 1)
+        difficulties = config_data["init"]["difficulties"]   # the dict of lists of 2 elements {"diff_name": [map_mode (str), fnf_json_path]}
+        url_github = config_data["url_github"]  # link to the application's GitHub
+        url_help = config_data["url_help"]  # link to get the documentation
+        verify_inputs = bool(config_data["verify_inputs"])  # 0 or 1 in the JSON, False or True in this program
 
-# widgets options lists
-map_mode_values = {
-    "[4K] Player 1 (Boyfriend)": 1,
-    "[4K] Player 2 (opponent)": 2,
-    "[4K] Players 1 and 2": 3,
-    "[8K] 2 players": 8,
-    "[8K] 2 players (swapped)": 9
-}
-map_mode_options = list(map_mode_values.keys())
-meter_options = [f"{i}/4" for i in range(1, 8)]  # 1/4, 2/4, 3/4, ... 7/4
-no_selected_map_mode = "(Choose an option)"  # text to display when no map mode is selected
-no_selected_file_text = ""  # text to display when there isn't a file selected
+    # widgets options lists
+    map_mode_values = {
+        "[4K] Player 1 (Boyfriend)": 1,
+        "[4K] Player 2 (opponent)": 2,
+        "[4K] Players 1 and 2": 3,
+        "[8K] 2 players": 8,
+        "[8K] 2 players (swapped)": 9
+    }
+    map_mode_options = list(map_mode_values.keys())
+    meter_options = [f"{i}/4" for i in range(1, 8)]  # 1/4, 2/4, 3/4, ... 7/4
+    no_selected_map_mode = "(Choose an option)"  # text to display when no map mode is selected
+    no_selected_file_text = ""  # text to display when there isn't a file selected
+except:
+    error_window = Crash_window(traceback.format_exc())
+    error_window.openWindow()
 
 class Exporting_window:
     """
