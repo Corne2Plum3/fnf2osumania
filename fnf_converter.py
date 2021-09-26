@@ -1,7 +1,9 @@
+from crash_window import Crash_window
 import json
 from math import log
 import os
 from pydub import AudioSegment
+import traceback
 import shutil
 from zipfile import ZipFile
 
@@ -446,6 +448,7 @@ class Osz_converter:
             shutil.rmtree(self.folder_path)
         except:
             print(f"WARNING: error while trying to delete the generated folder ('{self.folder_path}')")
+            # idk why, but is the song title is empty, the folder will not be deleted
 
         # .osz
         try:
@@ -463,86 +466,91 @@ class Osz_converter:
             Optional arguments:
                 path (str): where to create the .osz
         """
-        # 0. Initialization...
-        self.__export_current_step = -1
-        self.__export_total_steps = 0
-        self.status("Initialization...")
-        self.folder_name = ""
-        self.osz_name = ""
-        # get total amount of steps
-        self.__export_total_steps = 4 + len(osu_map.fnf_charts.keys())  # steps 1,5,6,7 + step 4
-        if osu_map.audio2_path == "":  # step 2
-            self.__export_total_steps += 2  # only audio 1
-        else:
-            self.__export_total_steps += 4  # audio 1 & 2
-        if osu_map.background_path != "":
-            self.__export_total_steps += 1  # includes background
+        try:
+            # 0. Initialization...
+            self.__export_current_step = -1
+            self.__export_total_steps = 0
+            self.status("Initialization...")
+            self.folder_name = ""
+            self.osz_name = ""
+            # get total amount of steps
+            self.__export_total_steps = 4 + len(osu_map.fnf_charts.keys())  # steps 1,5,6,7 + step 4
+            if osu_map.audio2_path == "":  # step 2
+                self.__export_total_steps += 2  # only audio 1
+            else:
+                self.__export_total_steps += 4  # audio 1 & 2
+            if osu_map.background_path != "":
+                self.__export_total_steps += 1  # includes background
 
-        # 1. create the folder with all files to compress
-        self.status("Creating the folder...")
+            # 1. create the folder with all files to compress
+            self.status("Creating the folder...")
 
-        # artist
-        if osu_map.artist == "" or osu_map.artist == None:
-            artist = "Unknown"
-        else:
-            artist = osu_map.artist
-        # define the folder name
-        self.folder_name = f"{artist} - {osu_map.title}"  # the folder file name
-        # get the full path of the folder
-        if path != "":  # if custom path defined
-            self.folder_path = f"{path}/{self.folder_name}"
-        else:
-            self.folder_path = self.folder_name  # attribute useful if the folder has to be removed (should be set BEFORE creating the folder)
-        # create the folder
-        os.makedirs(self.folder_path, exist_ok=True)  # disable errors if the folder already exists
+            # artist
+            if osu_map.artist == "" or osu_map.artist == None:
+                artist = "Unknown"
+            else:
+                artist = osu_map.artist
+            # define the folder name
+            self.folder_name = f"{artist} - {osu_map.title}"  # the folder file name
+            # get the full path of the folder
+            if path != "":  # if custom path defined
+                self.folder_path = f"{path}/{self.folder_name}"
+            else:
+                self.folder_path = self.folder_name  # attribute useful if the folder has to be removed (should be set BEFORE creating the folder)
+            # create the folder
+            os.makedirs(self.folder_path, exist_ok=True)  # disable errors if the folder already exists
+            
+            # 2. create the audio.mp3
+            self.status("Importing audio file 1...")
+            ogg_1 = AudioSegment.from_file(osu_map.audio1_path, format="ogg")  # create AudioSegment object from pydub library
+            ogg_1 += percentTodB(osu_map.audio1_volume)  # adjust volume
+            if osu_map.audio2_path == "":  # audio 1 only
+                self.status("Exporting the audio as mp3...")
+                ogg_1.export(f"{self.folder_path}/audio.mp3", format="mp3", bitrate="192k")  # create the audio file
+            else:
+                self.status("Importing audio file 2...")
+                ogg_2 = AudioSegment.from_file(osu_map.audio2_path, format="ogg")  # create a 2nd AudioSegment object
+                ogg_2 += percentTodB(osu_map.audio2_volume)  # adjust volume
+                self.status("Merging the audios 1 and 2...")
+                final_audio = ogg_1.overlay(ogg_2, position=0)  # put the 2 audios at the same time
+                self.status("Exporting the audio as mp3...")
+                final_audio.export(f"{self.folder_path}/audio.mp3", format="mp3", bitrate="192k") 
+
+            # 3. create the background
+            if osu_map.background_path != "":
+                self.status("Importing the background...")
+                shutil.copyfile(osu_map.background_path, f"{self.folder_path}/background.jpg")
+
+            # 4. create the .OSU file
+            for k in osu_map.fnf_charts.keys():
+                self.status(f"Creating the .osu file for the difficulty '{k}'...")
+                osu_map.fnf_charts[k].exportOsuFile(self.folder_path, k, osu_map.creator, osu_map.tags)
+
+            # 5. compress all the folder to the .osz (fun fact: the .osz file is just a .zip)
+            self.status("Compressing the generated folder to .osz file...")
+            # get .osz name and path
+            self.osz_name = self.folder_name + ".osz"
+            if path != "":
+                self.osz_path = f"{path}/{self.osz_name}"
+            else:
+                self.osz_path = self.osz_name
+            # create the .osz (basically a .zip)
+            with ZipFile(self.osz_path, "w") as zip_object:  # create a zip object and open it
+                for file in os.listdir(self.folder_path):  # for each file in the folder
+                    zip_object.write(f"{self.folder_path}/{file}")
+
+            # 6. remove the created folder (because now the files are in the .osz)
+            self.status("Removing previously generated folder...")
+            shutil.rmtree(self.folder_path)
+
+            # 7. Done ^^
+            self.status("Export done. The .osz has been created.")
+            if self.exporting_window != None and self.exporting_window.window != None:
+                self.exporting_window.finish(self.osz_path)  # function called for the GUI when export is complete
         
-        # 2. create the audio.mp3
-        self.status("Importing audio file 1...")
-        ogg_1 = AudioSegment.from_file(osu_map.audio1_path, format="ogg")  # create AudioSegment object from pydub library
-        ogg_1 += percentTodB(osu_map.audio1_volume)  # adjust volume
-        if osu_map.audio2_path == "":  # audio 1 only
-            self.status("Exporting the audio as mp3...")
-            ogg_1.export(f"{self.folder_path}/audio.mp3", format="mp3", bitrate="192k")  # create the audio file
-        else:
-            self.status("Importing audio file 2...")
-            ogg_2 = AudioSegment.from_file(osu_map.audio2_path, format="ogg")  # create a 2nd AudioSegment object
-            ogg_2 += percentTodB(osu_map.audio2_volume)  # adjust volume
-            self.status("Merging the audios 1 and 2...")
-            final_audio = ogg_1.overlay(ogg_2, position=0)  # put the 2 audios at the same time
-            self.status("Exporting the audio as mp3...")
-            final_audio.export(f"{self.folder_path}/audio.mp3", format="mp3", bitrate="192k") 
-
-        # 3. create the background
-        if osu_map.background_path != "":
-            self.status("Importing the background...")
-            shutil.copyfile(osu_map.background_path, f"{self.folder_path}/background.jpg")
-
-        # 4. create the .OSU file
-        for k in osu_map.fnf_charts.keys():
-            self.status(f"Creating the .osu file for the difficulty '{k}'...")
-            osu_map.fnf_charts[k].exportOsuFile(self.folder_path, k, osu_map.creator, osu_map.tags)
-
-        # 5. compress all the folder to the .osz (fun fact: the .osz file is just a .zip)
-        self.status("Compressing the generated folder to .osz file...")
-        # get .osz name and path
-        self.osz_name = self.folder_name + ".osz"
-        if path != "":
-            self.osz_path = f"{path}/{self.osz_name}"
-        else:
-            self.osz_path = self.osz_name
-        # create the .osz (basically a .zip)
-        with ZipFile(self.osz_path, "w") as zip_object:  # create a zip object and open it
-            for file in os.listdir(self.folder_path):  # for each file in the folder
-                zip_object.write(f"{self.folder_path}/{file}")
-
-        # 6. remove the created folder (because now the files are in the .osz)
-        self.status("Removing previously generated folder...")
-        shutil.rmtree(self.folder_path)
-
-        # 7. Done ^^
-        self.status("Export done. The .osz has been created.")
-        if self.exporting_window != None and self.exporting_window.window != None:
-            self.exporting_window.finish(self.osz_path)  # function called for the GUI when export is complete
+        except:
+            error_window = Crash_window(traceback.format_exc())
+            error_window.openWindow()
 
     def status(self, new_status):
         """
@@ -639,7 +647,7 @@ def jsonRemoveExtraData(file_path):
     while i < len(file_data[0]):
         i += 1
         if i >= len(file_data[0]):  # i out of range
-            print(level)
+            #print(level)
             print("Invalid JSON file ("+file_path+"): missing '}'.")
             return ""
         else:

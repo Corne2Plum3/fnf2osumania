@@ -20,7 +20,6 @@ class Thread_with_trace(threading.Thread):
             self.run = self.__run         
             threading.Thread.start(self)
         except:  # to show an error message if something wrong happens here
-            print("F")
             error_window = Crash_window(traceback.format_exc())
             error_window.openWindow()
  
