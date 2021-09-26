@@ -1,6 +1,6 @@
 {
     "app_name": "fnf2osu!mania converter",
-    "app_version": "1.0",
+    "app_version": "1.1",
     "colors": {
         "red": "#ff4433",
         "green": "#33ff33",
@@ -26,5 +26,5 @@
     },
     "url_github": "https://github.com/Corne2Plum3/fnf2osumania",
     "url_help": "https://github.com/Corne2Plum3/fnf2osumania/wiki",
-    "verify_inputs": 0
+    "verify_inputs": 1
 }
