@@ -46,7 +46,7 @@ As a Python program, there's some requirement
     * pydub
     * shutil
     * sys
-    * tkinter *(this one can't be download through pip and it's akward asf to install it. Good luck)*
+    * tkinter *(this one can't be downloaded through pip and it's akward asf to install it. Good luck)*
     * threading
     * trace
     * webbrowser
