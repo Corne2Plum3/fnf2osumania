@@ -13,6 +13,30 @@ If you find a bug or a question, post an [issue](https://github.com/Corne2Plum3/
 ## Required
 If you don't have this, the program will not work.
 * You need [FFMPEG](https://www.ffmpeg.org/) installed on your computer, else it won't work.
+* The font called [Barlow Condensed](https://fonts.google.com/specimen/Barlow+Condensed) installed on your computer.
+
+### Linux additional requirements
+See [Developping](https://github.com/Corne2Plum3/fnf2osumania#developping) because you will need the same requirements.
+
+## Using it
+
+### Windows
+
+1. Download the `.zip` with '-win' at the end of the name.
+2. Then run the `.exe` (don't delete or modify **config.json**!)
+
+### Linux
+1. Download the source code.
+2. Open the terminal in the folder where there's main.py, then run:
+   ```
+   python3 main.py
+   ```
+
+Learn how to use it [here](https://github.com/Corne2Plum3/fnf2osumania/wiki)
+
+## Developping
+You want to looks like an hacker by doing shit with the code or improve it? Download the source code.
+As a Python program, there's some requirement
 * **Python 3.7** or newer. (I'm not sure with older versions of Python 3. Forget Python 2)
 * These Python libraries, that can be downloaded using [pip](https://docs.python.org/fr/3.6/installing/index.html), some of them are already installed:
     * functools
@@ -23,18 +47,8 @@ If you don't have this, the program will not work.
     * pydub
     * shutil
     * sys
-    * tkinter
+    * tkinter *(this one can't be downloaded through pip and it's akward asf to install it. Good luck)*
     * threading
     * trace
     * webbrowser
     * zipfile
-
-## Using it
-*I really should improve that...*
-
-Download the source code and run `main.py`.
-
-Learn how to use it [here](https://github.com/Corne2Plum3/fnf2osumania/wiki)
-
-## Developping
-TODO
