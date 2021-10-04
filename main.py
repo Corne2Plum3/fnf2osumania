@@ -341,7 +341,7 @@ class Main_window:
         """
         global difficulties, no_selected_file_text, verify_inputs
         
-        if verify_inputs == False or self.verifyAllInputs() == True:  # verify is everything is okay (or skip this process)
+        if verify_inputs == False or (verify_inputs == True and self.verifyAllInputs() == True):  # verify is everything is okay (or skip this process)
 
             # no constants settings
 
@@ -789,8 +789,8 @@ class Main_window:
         # check ogg paths
         if self.audio_1_path_entry_var.get()!="":  # audio 1 only or both
             # audio 1
-            if fileExists(self.audio_1_path_entry_var.get()) == False:  # audio 1 doesn't exists
-                tkinter.messagebox.showerror("Invalid audio 1 file", "The selected file for the audio 1 doesn't exists.\nChoose a .ogg file.")
+            if getFileExtention(self.audio_1_path_entry_var.get()) != ".ogg":  # audio 1 doesn't exists
+                tkinter.messagebox.showerror("Invalid audio 1 file", "The selected file for the audio 1 isn't a .ogg file.\nChoose a .ogg file.")
                 return False   
             elif fileExists(self.audio_1_path_entry_var.get()) == False:  # audio 1 doesn't exists
                 tkinter.messagebox.showerror("Invalid audio 1 file", "The selected file for the audio 1 doesn't exists.\nChoose a .ogg file.")
