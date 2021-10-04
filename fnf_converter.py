@@ -426,6 +426,7 @@ class Osz_converter:
     def __init__(self, exporting_window=None):
         self.exporting_window = exporting_window
 
+        # these 4 attributes are edited automatically
         self.folder_name = ""  # the name of the last folder created. Set in exportAsOsz(). (ex: "sock.clip - Ballistic")
         self.folder_path = ""  # the path to the folder created during the export. Includes the folder name. (ex: "C:/Downloads/random_folder/sock.clip - Ballistic")
         self.osz_name = ""  # the name of the last .osz created. (ex: "sock.clip - Ballistic.osz")

@@ -2,6 +2,7 @@ from crash_window import Crash_window
 from fnf_converter import Fnf_chart, Osu_map, Osz_converter, jsonRemoveExtraData
 from functools import partial
 import json
+import os
 import pathlib
 import tkinter as tk
 import tkinter.filedialog
@@ -386,7 +387,7 @@ class Main_window:
             for k in difficulties.keys():  # add the difficulties
                 mapset.addDifficulty(k, map_mode_values[difficulties[k][0]], difficulties[k][1])
 
-            self.osz_converter_process = Thread_with_trace(target=self.osz_converter.exportAsOsz, args=(mapset, ""))
+            self.osz_converter_process = Thread_with_trace(target=self.osz_converter.exportAsOsz, args=(mapset, "output"))
             # Instead of directly using a threading.Thread, we use a Thread_with_trace (a threading.Thread class found on the Internet).
             # By using traces, it adds the method .kill() to stop the thread.
             self.osz_converter_process.start()  # run it (in another thread)
@@ -1080,6 +1081,8 @@ def setFilePath(string_var):
 
 # WHERE THE PROGRAM STARTS
 try:
+    
+    os.makedirs("output", exist_ok=True)  # create output folder if not exists
     root = Main_window()  # app window
     root.openWindow()
 except:
