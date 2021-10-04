@@ -25,7 +25,7 @@ try:
         difficulties = config_data["init"]["difficulties"]   # the dict of lists of 2 elements {"diff_name": [map_mode (str), fnf_json_path]}
         url_github = config_data["url_github"]  # link to the application's GitHub
         url_help = config_data["url_help"]  # link to get the documentation
-        verify_inputs = bool(config_data["verify_inputs"])  # 0 or 1 in the JSON, False or True in this program
+        verify_inputs = bool(int(config_data["verify_inputs"]))  # 0 or 1 in the JSON, False or True in this program
 
     # widgets options lists
     map_mode_values = {
