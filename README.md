@@ -12,7 +12,7 @@ If you find a bug or a question, post an [issue](https://github.com/Corne2Plum3/
 
 ## Required
 If you don't have this, the program will not work.
-* You need [FFMPEG](https://www.ffmpeg.org/) installed on your computer, else it won't work.
+* You need [FFMPEG](https://www.ffmpeg.org/) installed on your computer, else it won't work. ([YouTube tutorial](https://www.youtube.com/watch?v=r1AtmY-RMyQ))
 * The font called [Barlow Condensed](https://fonts.google.com/specimen/Barlow+Condensed) installed on your computer.
 
 ### Linux additional requirements
@@ -34,7 +34,7 @@ You will just download the source code and run it as is... Be sure you have requ
    python3 main.py
    ```
 
-Learn how to use it [here](https://github.com/Corne2Plum3/fnf2osumania/wiki)
+Learn how to use it [here](https://github.com/Corne2Plum3/fnf2osumania/wiki).
 
 ## Developping
 You want to look like an hacker by doing shit with the code, or just improve it? Download the source code.
