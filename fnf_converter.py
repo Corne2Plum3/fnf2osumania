@@ -54,7 +54,7 @@ class Fnf_chart:
         audio_file_name = "audio.mp3"  # audio file name
         background_file_name = "background.jpg"  # background file name
         source = "Friday Night Funkin"
-        osu_file_name = f"{self.artist} - {self.title} ({creator}) [{diff_name}].osu"
+        osu_file_name = removeIllegalCharacters(f"{self.artist} - {self.title} ({creator}) [{diff_name}].osu")
         sample_set = 1  # the sampleset to use in the beatmap
         sample_index = 0  # custom sample index for hitobjects
         meter = self.osu_object.meter  # the meter to set for uninherited timing points
@@ -493,7 +493,7 @@ class Osz_converter:
             else:
                 artist = osu_map.artist
             # define the folder name
-            self.folder_name = f"{artist} - {osu_map.title}"  # the folder file name
+            self.folder_name = removeIllegalCharacters(f"{artist} - {osu_map.title}")  # the folder file name
             # get the full path of the folder
             if path != "":  # if custom path defined
                 self.folder_path = f"{path}/{self.folder_name}"
@@ -501,7 +501,9 @@ class Osz_converter:
                 self.folder_path = self.folder_name  # attribute useful if the folder has to be removed (should be set BEFORE creating the folder)
             # create the folder
             os.makedirs(self.folder_path, exist_ok=True)  # disable errors if the folder already exists
-            
+
+            print(self.folder_path)
+
             # 2. create the audio.mp3
             self.status("Importing audio file 1...")
             ogg_1 = AudioSegment.from_file(osu_map.audio1_path, format="ogg")  # create AudioSegment object from pydub library
@@ -531,7 +533,7 @@ class Osz_converter:
             # 5. compress all the folder to the .osz (fun fact: the .osz file is just a .zip)
             self.status("Compressing the generated folder to .osz file...")
             # get .osz name and path
-            self.osz_name = self.folder_name + ".osz"
+            self.osz_name = removeIllegalCharacters(self.folder_name + ".osz")
             if path != "":
                 self.osz_path = f"{path}/{self.osz_name}"
             else:
@@ -684,3 +686,26 @@ def percentTodB(percent):
         return -1e12  # to avoid -infinity
     else:
         return 10 * log(percent/100, 10)
+
+def removeIllegalCharacters(string_to_modify):
+    """ 
+        Method:
+            Removes unautorized characters for file names from a string.
+        Argument:
+            string_to_modify (str): the str to edit.
+        Return:
+            (str): modified str without the annoying characters we don't want.
+    """
+    unautorized_characters = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
+    result = string_to_modify
+
+    for char in unautorized_characters:  # invalid characters
+        result = result.replace(char, "")
+
+    if result[-1] == "." or result[-1] == " ":  # invalid ending name
+        result = result[0:-1] + "_"
+
+    if result == "":
+        result = "0"  # to have something at least...
+
+    return result
