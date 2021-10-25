@@ -19,7 +19,7 @@
         "audio_2_volume": 100,
         "audio_offset": 0,
         "meter": "4/4",
-        "unique_bpm": 1,
+        "unique_bpm": 0,
         "unique_bpm_value": 120.0,
         "difficulties": {},
         "background": ""
