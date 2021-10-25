@@ -7,7 +7,7 @@ Import Friday Night Funkin charts into your osu! game.
 ![usage_example](https://user-images.githubusercontent.com/57914482/130650521-66264c5a-c365-4f89-a630-4cd5be4133db.JPG)
 
 ## Status
-It just started, sorry for bugs (and my bad english).
+Active on it.
 If you find a bug or a question, post an [issue](https://github.com/Corne2Plum3/fnf2osumania/issues).
 
 ## Required
@@ -44,6 +44,7 @@ As a Python program, there's some additional requirements
     * functools
     * json
     * math
+    * operator
     * os
     * pathlib
     * pydub
