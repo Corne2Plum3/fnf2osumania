@@ -786,8 +786,11 @@ class Main_window:
             return False
 
         # 2. Audio
-        # check ogg paths
-        if self.audio_1_path_entry_var.get()!="":  # audio 1 only or both
+        # check if there at least 1 audio selected then check ogg paths
+        if self.audio_1_path_entry_var.get()=="" and self.audio_2_path_entry_var.get()=="":  # no audio file selected
+            tkinter.messagebox.showerror("Missing audio file", "There isn't any audio file selected.\nChoose at least one .ogg file.")
+            return False
+        elif self.audio_1_path_entry_var.get()!="":  # audio 1 only or both
             # audio 1
             if getFileExtention(self.audio_1_path_entry_var.get()) != ".ogg":  # audio 1 doesn't exists
                 tkinter.messagebox.showerror("Invalid audio 1 file", "The selected file for the audio 1 isn't a .ogg file.\nChoose a .ogg file.")
@@ -795,7 +798,7 @@ class Main_window:
             elif fileExists(self.audio_1_path_entry_var.get()) == False:  # audio 1 doesn't exists
                 tkinter.messagebox.showerror("Invalid audio 1 file", "The selected file for the audio 1 doesn't exists.\nChoose a .ogg file.")
                 return False
-        if self.audio_2_path_entry_var.get()!="":  # audio 2 only or both
+        elif self.audio_2_path_entry_var.get()!="":  # audio 2 only or both
             # audio 2
             if getFileExtention(self.audio_2_path_entry_var.get()) != ".ogg":  # audio 2 isn't an ogg file
                 tkinter.messagebox.showerror("Invalid audio 2 file", "The selected file for the audio 2 isn't a .ogg file.\nChoose a .ogg file.")
