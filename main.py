@@ -453,7 +453,6 @@ class Main_window:
             # 1. Create and init the window
             self.window.title(app_name)  # set window title
             self.window.geometry("808x538")  # set window size
-            self.window.resizable(width=False, height=False)  # the window can't be resized
 
             # 2. Create and set the variables widgets
             # set the variables
@@ -988,7 +987,6 @@ class New_difficulty_window:
             self.window = tk.Toplevel(self.master.window)
             self.window.title("New difficulty")
             self.window.geometry("350x255")
-            self.window.resizable(width=False, height=False)  # the window can't be resized
 
             # widgets variables defined in __init__()
         
