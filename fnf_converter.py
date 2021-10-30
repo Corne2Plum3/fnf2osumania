@@ -34,6 +34,7 @@ class Fnf_chart:
         self.osu_object = osu_object  # the osu object (Osu_map class)
         self.offset = -osu_object.offset  # In the inputs we move audio. In reality we move the notes. (applied only at .osu files output)
         self.custom_bpm = osu_object.custom_bpm
+        self.default_bpm = 120
         
     def exportOsuFile(self, path, diff_name, creator, tags):
         """
@@ -224,7 +225,10 @@ class Fnf_chart:
             try:  # search in "bpm" section first
                 return json_data["bpm"]
             except: # search in "bpm" but into "song" section
-                return json_data["song"]["bpm"]
+                try:
+                    return json_data["song"]["bpm"]
+                except:
+                    print("WARNING: Failed to find the BPM...")
         else:
             return self.custom_bpm
 
@@ -338,10 +342,22 @@ class Fnf_chart:
         
         bpm_list.sort()  # sort bm_list by offset
         
-        # 1. Move the 1st BPM value
+        # 1. Replace the BPM = 0 by the value we get using getBPM()
+        # yes, you can have BPM = 0...
+
+        if self.getBPM()>=0:
+            default_bpm = self.getBPM()
+        else:
+            default_bpm = self.default_bpm
+
+        for i in range(len(bpm_list)):
+            if bpm_list[i][1] <= 0:
+                bpm_list[i][1] = default_bpm
+        
+        # 2. Move the 1st BPM value
         bpm_list[0][0] -= (bpm_list[0][0]//bpmToMs(bpm_list[0][1]))*bpmToMs(bpm_list[0][1])
 
-        # 2. Remove duplicates
+        # 3. Remove duplicates
         if len(bpm_list)==1:  # if BPM defined only 1 time, ignore the rest
             return bpm_list
         
@@ -596,7 +612,10 @@ def bpmToMs(bpm):
         Return:
             (int or float) : Time between 2 beats in ms.
     """
-    return 60000/bpm
+    if bpm <= 0:
+        return 0
+    else:
+        return 60000/bpm
 
 def fileExists(file_path):
     """
