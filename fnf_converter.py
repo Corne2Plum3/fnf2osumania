@@ -287,7 +287,7 @@ class Fnf_chart:
 
         json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as dict
 
-        notes_list = []  # the list we want (list of [note_start, column, note_end])
+        notes_list = []  # the list we want (list of [note_start_time, column, note_length])
         for i in range(len(json_data["song"]["notes"])):
             element = json_data["song"]["notes"][i]
             right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)  # if the section is to the player we want
@@ -297,11 +297,15 @@ class Fnf_chart:
                 if right_player and note[1]<=3:
                     note[0] = int(note[0])  # round and apply offset
                     note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
                     notes_list.append(note)
-                elif not(right_player) and note[1]>=4: # if there is column id over 3 => other player
+                elif not(right_player) and note[1]>=4:  # if there is column id over 3 => other player
                     note[0] = int(note[0])  # round offset
                     note[1] %= 4  # apply modulo 4
                     note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
                     notes_list.append(note)       
 
         notes_list = sorted(notes_list, key=itemgetter(0))  # sort the notes by chronological order (using the index 0)
