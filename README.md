@@ -19,17 +19,20 @@ If you don't have this, the program will not work.
 See [Developping](https://github.com/Corne2Plum3/fnf2osumania#developping) because you will need the same requirements.
 
 ## Using it
+You can pick all needed files ![https://github.com/Corne2Plum3/fnf2osumania/releases](here). You should download the last version.
 
 ### Windows
 
-1. Download the `.zip` with '-win' at the end of the name.
-2. Then run  `main.exe` (don't delete or modify any file!)
+1. Download `fnf2osumania-<version>-win.zip`.
+2. Then unzip the file you just downloaded.
+3. Finally run  `main.exe` (don't delete or modify any file!)
 **Important: if you're using the .exe file, some black windows called ffmpeg.exe will spawn and dissapear after a short time. DO NOT CLOSE THEM MANUALLY, else the program will crash.**
 
 ### Linux
-You will just download the source code and run it as is... Be sure you have requirements form Developping section too.
+You have to download the source code and run it as is... Be sure you have requirements form Developping section too.
 1. Download the source code.
-2. Open the terminal in the folder where there's main.py, then run:
+2. Then unzip the file you just downloaded.
+3. Open the terminal in the folder where there's main.py, then run this command:
    ```
    python3 main.py
    ```
