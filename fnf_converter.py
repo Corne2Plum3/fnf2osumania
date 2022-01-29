@@ -1,3 +1,5 @@
+""" Module which includes classes and functions needed to convert Friday Night Funkin' charts into .osz (osu mapsets). """
+
 from crash_window import Crash_window
 import json
 from math import log

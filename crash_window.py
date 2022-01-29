@@ -1,3 +1,5 @@
+""" Simple tkinter called when the program encounters an error and can display a custom message (suppsed to be the error text.) """
+
 import tkinter as tk
 
 class Crash_window:
