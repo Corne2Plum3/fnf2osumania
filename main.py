@@ -25,6 +25,7 @@ try:
 
         app_name = config_data["app_name"]
         app_version = config_data["app_version"]  # version of the application
+        check_ffmpeg = config_data["check_ffmpeg"]  # check if ffmpeg is installed when the program is started
         colors = config_data["colors"]  # dict with some colors used in the app
         delete_files_when_cancel = config_data["delete_files_when_cancel"]  # if the cancel button is pressed, delete generated files? (0 or 1)
         difficulties = config_data["init"]["difficulties"]   # the dict of lists of 2 elements {"diff_name": [map_mode (str), fnf_json_path]}
@@ -1192,7 +1193,7 @@ def setFilePath(string_var):
 # WHERE THE PROGRAM STARTS
 
 try:
-    if not(detectFFMPEG()):  # ffmpeg not detected
+    if check_ffmpeg and not(detectFFMPEG()):  # ffmpeg not detected
         ffmpeg_window = No_FFMPEG_window()
         ffmpeg_window.openWindow()
     
