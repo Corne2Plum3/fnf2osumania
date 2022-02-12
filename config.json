@@ -1,6 +1,7 @@
 {
     "app_name": "fnf2osu!mania converter",
-    "app_version": "1.1.4",
+    "app_version": "1.1.5",
+    "check_ffmpeg": 1,
     "colors": {
         "red": "#ff4433",
         "green": "#33ff33",
@@ -24,6 +25,7 @@
         "difficulties": {},
         "background": ""
     },
+    "url_ffmpeg_tutorial": "https://github.com/Corne2Plum3/fnf2osumania/wiki/How-to-install-FFMPEG",
     "url_github": "https://github.com/Corne2Plum3/fnf2osumania",
     "url_help": "https://github.com/Corne2Plum3/fnf2osumania/wiki",
     "verify_inputs": 1
