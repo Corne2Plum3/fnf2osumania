@@ -1193,7 +1193,7 @@ def setFilePath(string_var):
 # WHERE THE PROGRAM STARTS
 
 try:
-    if True or not(detectFFMPEG()):  # ffmpeg not detected
+    if not(detectFFMPEG()):  # ffmpeg not detected
         ffmpeg_window = No_FFMPEG_window()
         ffmpeg_window.openWindow()
     
