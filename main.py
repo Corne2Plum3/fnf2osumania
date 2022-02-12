@@ -1076,7 +1076,7 @@ class No_FFMPEG_window:
             # Create and init the window
             self.window = tk.Tk()
             self.window.title("FFMPEG isn't installed.")
-            self.window.geometry("320x200")
+            self.window.geometry("330x200")
             self.window.resizable(width=False, height=False)  # the window can't be resized
             
             # fonts (I know the code is a mess at this point...)
@@ -1099,8 +1099,7 @@ class No_FFMPEG_window:
                 justify="left",
                 padx=4,
                 width=600,
-                text="""FFMPEG isn't detected on your device, so the program will not work.\n
-                Please install FFMPEG then restart the program.
+                text="""FFMPEG isn't detected on your device, so the program will not work.\nPlease install FFMPEG, restart your computer and restart the program.
                 """
             )
             body_message.grid(row=1, column=0, columnspan=2, sticky="we")
