@@ -763,16 +763,16 @@ def percentTodB(percent):
 def removeIllegalCharacters(string_to_modify):
     """ 
         Method:
-            Removes unautorized characters for file names from a string.
+            Removes unauthorized characters for file names from a string.
         Argument:
             string_to_modify (str): the str to edit.
         Return:
             (str): modified str without the annoying characters we don't want.
     """
-    unautorized_characters = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
+    unauthorized_characters = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
     result = string_to_modify
 
-    for char in unautorized_characters:  # invalid characters
+    for char in unauthorized_characters:  # invalid characters
         result = result.replace(char, "")
 
     if result[-1] == "." or result[-1] == " ":  # invalid ending name
