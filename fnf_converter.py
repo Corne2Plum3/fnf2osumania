@@ -462,7 +462,7 @@ class Osz_converter:
         """
             Class method:
                 Delete (or at least try) to delete the folder and the .osz generated during the conversion.
-            Argumnts:
+            Arguments:
                 None.
             Return:
                 Nothing.
@@ -583,7 +583,7 @@ class Osz_converter:
     def status(self, new_status):
         """
             Class Method:
-                Called seveal times during exportAsOsz() to update self.stringvar_status.
+                Called several times during exportAsOsz() to update self.stringvar_status.
             Arguments:
                 new_status (str): new text to display
             Return:
@@ -637,6 +637,52 @@ def fileExists(file_path):
         return False
     else:
         return True
+
+def is_a_float(string_to_verify):
+    """ 
+        Method:
+            Verify if a str can be converted to float. 
+        Argument:
+            string_to_verify (str): the str to test. 
+        Return:
+            (bool): returns True if the conversion is possible.
+    """
+
+    # it's just going to try to convert...
+    a = 0.0  # just a random variable
+    can_be_converted = False
+
+    try:
+        a = float(string_to_verify)
+    except:  # failed
+        can_be_converted = False
+    else:  # he did it
+        can_be_converted = True
+    
+    return can_be_converted
+
+def is_a_int(string_to_verify):
+    """ 
+        Method:
+            Verify if a str can be converted to int. 
+        Argument:
+            string_to_verify (str): the str to test. 
+        Return:
+            (bool): returns True if the conversion is possible.
+    """
+
+    # it's just going to try to convert...
+    a = 0  # just a random variable
+    can_be_converted = False
+
+    try:
+        a = int(string_to_verify)
+    except:  # failed
+        can_be_converted = False
+    else:  # he did it
+        can_be_converted = True
+    
+    return can_be_converted
 
 def jsonRemoveExtraData(file_path):
     """
