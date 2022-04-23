@@ -1091,7 +1091,7 @@ class No_FFMPEG_window:
             frame_body.grid(row=0, column=0, sticky="nswe")
 
             # place widgets
-            header = tk.Label(frame_body, anchor="sw", justify="center", padx=4, pady=8, text='FFMPEG no found :(')
+            header = tk.Label(frame_body, anchor="sw", justify="center", padx=4, pady=8, text='FFMPEG not found :(')
             header.grid(row=0, column=0, columnspan=2, sticky="we")
             header.config(font=self.font_sans_10_b)
 
