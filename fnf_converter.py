@@ -309,6 +309,8 @@ class Fnf_chart:
                     if type(note[k]) == str and not(is_a_float(note[k])):  # str which is not an number
                         del note[k]  # remove it from the list
                     else:
+                        if type(note[k]) == str:  # convert to float
+                            note[k] = float(note[k])
                         k += 1  # check the next index
 
                 if len(note) < 3:  # if we have less than 3 arguments -> note ignored
