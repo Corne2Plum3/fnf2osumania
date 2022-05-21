@@ -13,7 +13,7 @@ If you find a bug or a question, post an [issue](https://github.com/Corne2Plum3/
 ## Required
 If you don't have this, the program will not work.
 * You need [FFMPEG](https://www.ffmpeg.org/) installed on your computer, else it won't work. ([YouTube tutorial](https://www.youtube.com/watch?v=r1AtmY-RMyQ))
-* The font called [Barlow Condensed](https://fonts.google.com/specimen/Barlow+Condensed) installed on your computer.
+* The font called [Barlow Condensed](https://fonts.google.com/specimen/Barlow+Condensed) installed on your computer (you can find the font files in the source code, in the `fonts` folder).
 
 ### Linux additional requirements
 See [Developping](https://github.com/Corne2Plum3/fnf2osumania#developping) because you will need the same requirements.
