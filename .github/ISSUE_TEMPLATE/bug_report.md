@@ -25,7 +25,8 @@ What OS did you used? *(Windows 7/8/10, Linux, ...)*
 Also, please specify what did you used exactly *(the .exe file or the source code?)*. If you used Python, please specify the version of your Python *(example: Python 3.7.6)*
 
 **Used files:**
-If you input files in this program, post them here (just drag the files in this box), it would be useful to understand how the bug happened.
+If you input files in this program, post them here (just drag the files in this box), it would be useful to reproduce the bug.
+If it's a mod, say what mod is it and please provide a download link.
 
 **Additional context:**
-Something to add?
+Any additional comments?
