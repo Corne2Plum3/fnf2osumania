@@ -211,7 +211,7 @@ class Fnf_chart:
         else:  # idk how it's possible to finish here
             notes_list = []
 
-        notes_list.sort()  # sort the notes by offset order (using the index 0)
+        notes_list = sorted(notes_list, key=itemgetter(0))  # sort the notes by offset order (using the index 0)
 
         # convert to osu notes
         note_type = 0  # used to determinate the 4th parameter of a hitobject. 1=normal note, 128=long note, +4=new combo
@@ -578,7 +578,7 @@ class Fnf_chart:
                         note[2] = 0  # if we have negative value -> simple note
                     notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))       
 
-        notes_list.sort()  # sort the notes by chronological order (using the index 0)
+        notes_list = sorted(notes_list, key=itemgetter(0))  # sort the notes by chronological order (using the index 0)
         return notes_list
 
     def getScrollSpeed(self):
