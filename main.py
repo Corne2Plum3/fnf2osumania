@@ -1,5 +1,5 @@
 from crash_window import Crash_window
-from fnf_converter import Fnf_chart, Osu_map, Osz_converter, jsonRemoveExtraData
+from fnf_converter import Fnf_chart, Osu_map, Osz_converter, jsonRemoveExtraData, removeIllegalCharacters
 from functools import partial
 import json
 import os
@@ -39,8 +39,18 @@ try:
         "[4K] Player 1 (Boyfriend)": 1,
         "[4K] Player 2 (opponent)": 2,
         "[4K] Players 1 and 2": 3,
-        "[8K] 2 players": 8,
-        "[8K] 2 players (swapped)": 9
+        "[5K] Player 1 (Boyfriend)": 5,
+        "[5K] Player 2 (opponent)": 52,
+        "[6K] Player 1 (Boyfriend)": 6,
+        "[6k] Player 2 (opponent)": 62,
+        "[7K] Player 1 (Boyfriend)": 7,
+        "[7K] Player 2 (opponent)": 72,
+        "[8K] Player 1 (Boyfriend)": 8,
+        "[8K] Player 2 (opponent)": 82,
+        "[8K] 2 players (Co-op)": 42,
+        "[8K] 2 players (swapped) (Co-op)": 422,
+        "[9K] Player 1 (Boyfriend)": 9,
+        "[9K] Player 2 (opponent)": 92
     }
     map_mode_options = list(map_mode_values.keys())
     meter_options = [f"{i}/4" for i in range(1, 8)]  # 1/4, 2/4, 3/4, ... 7/4
@@ -460,6 +470,7 @@ class Main_window:
             # 1. Create and init the window
             self.window.title(app_name)  # set window title
             self.window.geometry("930x620")  # set window size (main app)
+            self.window.resizable(width=False, height=False)  # the window can't be resized
 
             # 2. Create and set the variables widgets
             # set the variables
@@ -783,13 +794,24 @@ class Main_window:
         if self.metadata_title_entry_var.get() == "":  # if empty song title
             tkinter.messagebox.showerror("Invalid song title", "The song title isn't set.\nSet a song title.")
             return False  # quit the function
-        elif len(self.metadata_title_entry_var.get()) > 127:  # too long song title
-            tkinter.messagebox.showerror("Invalid song title", "The song title is way too long.\nSet a shorter song title (max. 127 characters).")
-            return False
         # if the user is empty (maybe the user doesn't know?), the artist will be set to 'Unknown' by the converter
-        elif len(self.metadata_artist_entry_var.get()) > 127:  # too long song artist
-            tkinter.messagebox.showerror("Invalid song artist", "The song artist is way too long.\nSet a shorter song artist (max. 127 characters).")
+        elif len(f"{self.metadata_title_entry_var.get()} - {self.metadata_artist_entry_var.get()}.osz") > 201: # too long song title/artist
+            tkinter.messagebox.showerror("Invalid song title/song artist", "The song title and/or song artist is/are way too long.\nSet a shorter song title and/or song artist (max. 201 characters altogether).")
             return False
+        elif os.path.isfile(f"output/{self.metadata_title_entry_var.get()} - {self.metadata_artist_entry_var.get()}.osz"):
+
+            count = 1
+            while os.path.isfile(f"output/{self.metadata_title_entry_var.get()} - {self.metadata_artist_entry_var.get()} ({count}).osz"):
+                count += 1
+
+            if len(f"{self.metadata_title_entry_var.get()} - {self.metadata_artist_entry_var.get()} ({count}).osz") > 201:
+                tkinter.messagebox.showerror("Invalid song title/song artist", "The song title and/or song artist is/are way too long.\nSet a shorter song title and/or song artist (max. 201 characters altogether).")
+                return False
+        else:
+            for k in difficulties.keys():
+                if len(removeIllegalCharacters(f"{self.metadata_artist_entry_var.get()} - {self.metadata_title_entry_var.get()} ({self.metadata_username_entry_var.get()}) [{k}].osu")) > 201:
+                    tkinter.messagebox.showerror("Invalid song title/song artist", "The song title and/or song artist is/are way too long.\nSet a shorter song title and/or song artist (max. 201 characters altogether).")
+                    return False
 
         # 2. Audio
         # check if there at least 1 audio selected then check ogg paths
