@@ -326,17 +326,17 @@ class Fnf_chart:
             return self.getNotesPlayer(2) + [[p1_notes[i][0],p1_notes[i][1]+4,p1_notes[i][2]] for i in range(len(p1_notes))]
 
         def getNotes9K(self, player_id):
-        """
-            Class method:
-                Return a list with all notes of 1 player.
-            Arguments:
-                player_id (1, or 2): player id. (1=bf ; 2=ennemy)
-            Return:
-                list of lists with 3 elements: [offset, column, length]
-                The offset is when is the beginning of the note, in ms.
-                The column says on which column is the note. 0=left1 ; 1=down1 ; 2=up1 ; 3=right1 ; 4=center ; 5=left2 ; 6=down2 ; 7=up2 ; 8=right2
-                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
-        """
+            """
+                Class method:
+                    Return a list with all notes of 1 player.
+                Arguments:
+                    player_id (1, or 2): player id. (1=bf ; 2=ennemy)
+                Return:
+                    list of lists with 3 elements: [offset, column, length]
+                    The offset is when is the beginning of the note, in ms.
+                    The column says on which column is the note. 0=left1 ; 1=down1 ; 2=up1 ; 3=right1 ; 4=center ; 5=left2 ; 6=down2 ; 7=up2 ; 8=right2
+                    The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
+            """
         assert player_id==1 or player_id==2
 
         json_data = json.loads(jsonRemoveExtraData(self.map_path))
