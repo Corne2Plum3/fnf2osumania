@@ -1040,10 +1040,11 @@ def removeIllegalCharacters(string_to_modify):
         Return:
             (str): modified str without the annoying characters we don't want.
     """
-    unautorized_characters = ['"', '<', '>', '|', '?', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\n', '\x0b', '\x0c', '\r', '\x0e', '\x0f', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1a', '\x1b', '\x1c', '\x1d', '\x1e', '\x1f', ':', '*', '?', '\\', '/']
+    unauthorized_characters = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
+    result = string_to_modify
 
     for char in unauthorized_characters:  # invalid characters
-        result = string_to_modify.replace(char, "")
+        result = result.replace(char, "")
 
     if result[-1] == "." or result[-1] == " ":  # invalid ending name
         result = result[0:-1] + "_"
