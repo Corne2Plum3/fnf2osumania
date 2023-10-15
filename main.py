@@ -1,5 +1,5 @@
 from crash_window import Crash_window
-from fnf_converter import Fnf_chart, Osu_map, Osz_converter, jsonRemoveExtraData
+from fnf_converter import Fnf_chart, Osu_map, Osz_converter, jsonRemoveExtraData, removeIllegalCharacters
 from functools import partial
 import json
 import os
@@ -17,19 +17,15 @@ import webbrowser
 
 # init
 try:
-    # ffmpeg detector init
-    ffmpeg_detect_file_test = "nothing2.ogg"  # used in detectFFMPEG(). Must be a ogg audio
 
     with open("config.json", "r") as file:  # all settings from config.json
         config_data = json.loads(file.read())  # parse it as dict
 
         app_name = config_data["app_name"]
         app_version = config_data["app_version"]  # version of the application
-        check_ffmpeg = config_data["check_ffmpeg"]  # check if ffmpeg is installed when the program is started
         colors = config_data["colors"]  # dict with some colors used in the app
         delete_files_when_cancel = config_data["delete_files_when_cancel"]  # if the cancel button is pressed, delete generated files? (0 or 1)
         difficulties = config_data["init"]["difficulties"]   # the dict of lists of 2 elements {"diff_name": [map_mode (str), fnf_json_path]}
-        url_ffmpeg_tutorial = config_data["url_ffmpeg_tutorial"]
         url_github = config_data["url_github"]  # link to the application's GitHub
         url_help = config_data["url_help"]  # link to get the documentation
         verify_inputs = bool(int(config_data["verify_inputs"]))  # 0 or 1 in the JSON, False or True in this program
@@ -39,8 +35,18 @@ try:
         "[4K] Player 1 (Boyfriend)": 1,
         "[4K] Player 2 (opponent)": 2,
         "[4K] Players 1 and 2": 3,
-        "[8K] 2 players": 8,
-        "[8K] 2 players (swapped)": 9
+        "[5K] Player 1 (Boyfriend)": 5,
+        "[5K] Player 2 (opponent)": 52,
+        "[6K] Player 1 (Boyfriend)": 6,
+        "[6k] Player 2 (opponent)": 62,
+        "[7K] Player 1 (Boyfriend)": 7,
+        "[7K] Player 2 (opponent)": 72,
+        "[8K] Player 1 (Boyfriend)": 8,
+        "[8K] Player 2 (opponent)": 82,
+        "[8K] 2 players (Co-op)": 42,
+        "[8K] 2 players (swapped) (Co-op)": 422,
+        "[9K] Player 1 (Boyfriend)": 9,
+        "[9K] Player 2 (opponent)": 92
     }
     map_mode_options = list(map_mode_values.keys())
     meter_options = [f"{i}/4" for i in range(1, 8)]  # 1/4, 2/4, 3/4, ... 7/4
@@ -459,7 +465,7 @@ class Main_window:
 
             # 1. Create and init the window
             self.window.title(app_name)  # set window title
-            self.window.geometry("930x620")  # set window size (main app)
+            self.window.geometry("937x620")  # set window size (main app)
 
             # 2. Create and set the variables widgets
             # set the variables
@@ -783,13 +789,24 @@ class Main_window:
         if self.metadata_title_entry_var.get() == "":  # if empty song title
             tkinter.messagebox.showerror("Invalid song title", "The song title isn't set.\nSet a song title.")
             return False  # quit the function
-        elif len(self.metadata_title_entry_var.get()) > 127:  # too long song title
-            tkinter.messagebox.showerror("Invalid song title", "The song title is way too long.\nSet a shorter song title (max. 127 characters).")
-            return False
         # if the user is empty (maybe the user doesn't know?), the artist will be set to 'Unknown' by the converter
-        elif len(self.metadata_artist_entry_var.get()) > 127:  # too long song artist
-            tkinter.messagebox.showerror("Invalid song artist", "The song artist is way too long.\nSet a shorter song artist (max. 127 characters).")
+        elif len(f"{self.metadata_title_entry_var.get()} - {self.metadata_artist_entry_var.get()}.osz") > 201: # too long song title/artist
+            tkinter.messagebox.showerror("Invalid song title/song artist", "The song title and/or song artist is/are way too long.\nSet a shorter song title and/or song artist (max. 201 characters altogether).")
             return False
+        elif os.path.isfile(f"output/{self.metadata_title_entry_var.get()} - {self.metadata_artist_entry_var.get()}.osz"):
+
+            count = 1
+            while os.path.isfile(f"output/{self.metadata_title_entry_var.get()} - {self.metadata_artist_entry_var.get()} ({count}).osz"):
+                count += 1
+
+            if len(f"{self.metadata_title_entry_var.get()} - {self.metadata_artist_entry_var.get()} ({count}).osz") > 201:
+                tkinter.messagebox.showerror("Invalid song title/song artist", "The song title and/or song artist is/are way too long.\nSet a shorter song title and/or song artist (max. 201 characters altogether).")
+                return False
+        else:
+            for k in difficulties.keys():
+                if len(removeIllegalCharacters(f"{self.metadata_artist_entry_var.get()} - {self.metadata_title_entry_var.get()} ({self.metadata_username_entry_var.get()}) [{k}].osu")) > 201:
+                    tkinter.messagebox.showerror("Invalid song title/song artist", "The song title and/or song artist is/are way too long.\nSet a shorter song title and/or song artist (max. 201 characters altogether).")
+                    return False
 
         # 2. Audio
         # check if there at least 1 audio selected then check ogg paths
@@ -1041,109 +1058,6 @@ class New_difficulty_window:
 
             self.window.mainloop()
 
-class No_FFMPEG_window:
-    """
-        Class:
-            Object that represent a window which allow to create a difficulty.
-            Only 1 object of this class should be created. This object is a tk.Tk window. It doesn't have a master
-        Arguments:
-            Nothing.
-    """
-    def __init__(self):
-        self.__is_open = False
-
-    def openTutorial(self):
-        """
-            Class method:
-                Open the web browser to the tutorial to install ffmpeg.
-        """
-        global url_ffmpeg_tutorial
-        webbrowser.open(url_ffmpeg_tutorial)
-
-    def openWindow(self):
-        """
-            Class method:
-                Initialize and open the window.
-            Arguments:
-                None.
-            Return:
-                Nothing
-        """
-        global colors
-
-        if not(self.__is_open):
-            self.__is_open = True
-
-            # Create and init the window
-            self.window = tk.Tk()
-            self.window.title("FFMPEG isn't installed.")
-            self.window.geometry("380x230")  #  no FFMPEG
-            self.window.resizable(width=False, height=False)  # the window can't be resized
-            
-            # fonts (I know the code is a mess at this point...)
-            self.font_sans_10 = tkFont.Font(family="Barlow Condensed", size=10)
-            self.font_sans_10_b = tkFont.Font(family="Barlow Condensed", size=10, weight="bold")
-            self.font_sans_10_u = tkFont.Font(family="Barlow Condensed", size=10, underline=True)
-            self.font_sans_12 = tkFont.Font(family="Barlow Condensed", size=12)
-
-            # Widgets
-            frame_body = tk.Frame(self.window, padx=4, pady=4)  # used to create padding for the rest of the window
-            frame_body.grid(row=0, column=0, sticky="nswe")
-
-            # place widgets
-            header = tk.Label(frame_body, anchor="sw", justify="center", padx=4, pady=8, text='FFMPEG not found :(')
-            header.grid(row=0, column=0, columnspan=2, sticky="we")
-            header.config(font=self.font_sans_10_b)
-
-            body_message = tk.Message(frame_body,
-                anchor="nw",
-                justify="left",
-                padx=4,
-                width=600,
-                text="""FFMPEG isn't detected on your device, so the program will not work.\nPlease install FFMPEG, restart your computer and restart the program.
-                """
-            )
-            body_message.grid(row=1, column=0, columnspan=2, sticky="we")
-            body_message.config(font=self.font_sans_10)
-
-            button_close = tk.Button(frame_body, command=sys.exit, text="Close")  # ends the whole program
-            button_close.grid(row=2, column=0)
-            button_close.config(font=self.font_sans_10)
-
-            button_close = tk.Button(frame_body, command=self.openTutorial, text="How to install FFMPEG")  # opens page to the tutorials
-            button_close.grid(row=2, column=1)
-            button_close.config(font=self.font_sans_10)
-            
-            self.window.mainloop()
-
-def detectFFMPEG():
-    """ 
-        Method:
-            Try to detect FFMPEG by running a command that need to use it.
-            If it finishes like the issue #5, that means there's not FFMPEG installed. 
-        Argument:
-            None.
-        Return:
-            (bool): True if FFMPEG were detected, otherwise returns false.
-    """
-    """
-    try:
-        AudioSegment.from_file(ffmpeg_detect_file_test, format="ogg")
-    except:
-        return False
-    else:
-        return True
-    """
-
-    try:
-        AudioSegment.from_file(ffmpeg_detect_file_test, format="ogg")
-    except FileNotFoundError:
-        ffmpeg_detected = False
-    else:
-        ffmpeg_detected = True
-    
-    return ffmpeg_detected
-
 def fileExists(file_path):
     """
         Method:
@@ -1210,7 +1124,15 @@ def main():
         error_window.openWindow()
 
 # WHERE THE PROGRAM STARTS :
-if __name__ == "__main__":
-    main()
 
+try:
+    os.makedirs("output", exist_ok=True)  # create output folder if not exists
+    root = Main_window()  # app window
+    root.openWindow()
 
+except SystemExit:  # don't call error message when SystemExit is raised
+    pass
+
+except:
+    error_window = Crash_window(traceback.format_exc())
+    error_window.openWindow()
