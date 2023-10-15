@@ -972,15 +972,15 @@ def percentTodB(percent):
 def removeIllegalCharacters(string_to_modify):
     """ 
         Method:
-            Removes unautorized characters for file names from a string.
+            Removes unauthorized characters for file names from a string.
         Argument:
             string_to_modify (str): the str to edit.
         Return:
             (str): modified str without the annoying characters we don't want.
     """
-    unautorized_characters = ['"', '<', '>', '|', '?', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\n', '\x0b', '\x0c', '\r', '\x0e', '\x0f', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1a', '\x1b', '\x1c', '\x1d', '\x1e', '\x1f', ':', '*', '?', '\\', '/']
+    unauthorized_characters = ['"', '<', '>', '|', '?', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\n', '\x0b', '\x0c', '\r', '\x0e', '\x0f', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1a', '\x1b', '\x1c', '\x1d', '\x1e', '\x1f', ':', '*', '?', '\\', '/']
 
-    for char in unautorized_characters:  # invalid characters
+    for char in unauthorized_characters:  # invalid characters
         result = string_to_modify.replace(char, "")
 
     if result[-1] == "." or result[-1] == " ":  # invalid ending name
