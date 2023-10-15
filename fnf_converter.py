@@ -3,7 +3,6 @@
 from crash_window import Crash_window
 import json
 from math import log
-from operator import itemgetter
 import os
 from pydub import AudioSegment
 import traceback
@@ -25,7 +24,7 @@ class Fnf_chart:
                 9 = 8K map with Player 1 at the left and Player 2 at the right. (reversed FnF)
     """
     def __init__(self, map_path, song_inst_path, song_voices_path, osu_object, map_mode):
-        assert map_mode in [1,2,3,8,9]  # verify mode input
+        assert map_mode in [1,2,3,5,52,6,62,7,72,8,82,9,92,42,422]  # verify mode input
         
         self.map_path = map_path  # path to the json
         self.song_inst_path = song_inst_path
@@ -53,7 +52,11 @@ class Fnf_chart:
         """
         # function consts
         x_4K = [64,196,320,448]  # x coordinates to input in the osu file according to the column for 4K maps.
+        x_5K = [51,153,256,358,460] # x coordinates for 5K map
+        x_6K = [64,128,192,320,384,448] # x coordinates for 6K map
+        x_7K = [36,109,182,256,329,402,475] # x coordinates for 7K map
         x_8K = [32,96,160,224,288,352,416,480]  # x coordinates for 8K map
+        x_9K = [32,96,142,224,256,312,352,416,480] # x coordinates for 9K map
         audio_file_name = "audio.mp3"  # audio file name
         background_file_name = "background.jpg"  # background file name
         source = "Friday Night Funkin"
@@ -71,10 +74,19 @@ class Fnf_chart:
             artist = self.artist
 
         # amount of keys
-        if self.map_mode < 8:
+        if self.map_mode <= 3:
             keys_count = 4
-        else:
+        elif self.map_mode == 5 or self.map_mode == 52:
+            keys_count = 5
+        elif self.map_mode == 6 or self.map_mode == 62:
+            keys_count = 6
+        elif self.map_mode == 7 or self.map_mode == 72:
+            keys_count = 7
+        elif self.map_mode == 42 or self.map_mode == 422 or self.map_mode == 8 or self.map_mode == 82:
             keys_count = 8
+        elif self.map_mode == 9 or self.map_mode == 92:
+            keys_count = 9
+
         # scroll speed
         scroll_speed = self.getScrollSpeed()
 
@@ -172,14 +184,34 @@ class Fnf_chart:
             notes_list = self.getNotesPlayer(2)
         elif self.map_mode==3:
             notes_list = self.getNotesPlayer(1) + self.getNotesPlayer(2)
+        elif self.map_mode==5:
+            notes_list = self.getNotes5K(1)
+        elif self.map_mode==52:
+            notes_list = self.getNotes5K(2)
+        elif self.map_mode==6:
+            notes_list = self.getNotes6K(1)
+        elif self.map_mode==62:
+            notes_list = self.getNotes6K(2)
+        elif self.map_mode==7:
+            notes_list = self.getNotes7K(1)
+        elif self.map_mode==72:
+            notes_list = self.getNotes7K(2)
         elif self.map_mode==8:
-            notes_list = self.getNotesAll8K(False)
+            notes_list = self.getNotes8K(1)
+        elif self.map_mode==82:
+            notes_list = self.getNotes8K(2)
         elif self.map_mode==9:
+            notes_list = self.getNotes9K(1)
+        elif self.map_mode==92:
+            notes_list = self.getNotes9K(2)
+        elif self.map_mode==42:
+            notes_list = self.getNotesAll8K(False)
+        elif self.map_mode==422:
             notes_list = self.getNotesAll8K(True)
         else:  # idk how it's possible to finish here
             notes_list = []
 
-        notes_list = sorted(notes_list, key=itemgetter(0))  # sort the notes by offset order (using the index 0)
+        notes_list.sort()  # sort the notes by offset order (using the index 0)
 
         # convert to osu notes
         note_type = 0  # used to determinate the 4th parameter of a hitobject. 1=normal note, 128=long note, +4=new combo
@@ -190,20 +222,36 @@ class Fnf_chart:
                 if i==0:  # first note
                     note_type += 4  # add new combo (binary: 0000 0100)
                 # generate the line
-                if self.map_mode < 8:  # 4K mode
+                if self.map_mode == 1 or self.map_mode == 2 or self.map_mode == 3:  # 4K mode
                     osu_file_content += f"{x_4K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
-                else:  # 8K mode
+                elif self.map_mode == 5 or self.map_mode == 52: # 5K mode
+                    osu_file_content += f"{x_5K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
+                elif self.map_mode == 6 or self.map_mode == 62: # 6K mode
+                    osu_file_content += f"{x_6K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
+                elif self.map_mode == 7 or self.map_mode == 72: # 7K mode
+                    osu_file_content += f"{x_7K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
+                elif self.map_mode == 42 or self.map_mode == 422 or self.map_mode == 8 or self.map_mode == 82:  # 8K mode
                     osu_file_content += f"{x_8K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
+                elif self.map_mode == 9 or self.map_mode == 92:  # 9K mode
+                    osu_file_content += f"{x_9K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
             else:  # long/hold note
                 # calculate note_type
                 note_type = 128  # binary: 1000 0000
                 if i==0:  # first note
                     note_type += 4  # add new combo
                 # generate the line
-                if self.map_mode < 8:  # 4K mode
+                if self.map_mode == 1 or self.map_mode == 2 or self.map_mode == 3:  # 4K mode
                     osu_file_content += f"{x_4K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"
-                else:  # 8K mode
+                elif self.map_mode == 5 or self.map_mode == 52: # 5K mode
+                    osu_file_content += f"{x_5K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"    
+                elif self.map_mode == 6 or self.map_mode == 62: # 6K mode
+                    osu_file_content += f"{x_6K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"
+                elif self.map_mode == 7 or self.map_mode == 72: # 7K mode
+                    osu_file_content += f"{x_7K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"
+                elif self.map_mode == 42 or self.map_mode == 422 or self.map_mode == 8 or self.map_mode == 82:  # 8K mode
                     osu_file_content += f"{x_8K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"
+                elif self.map_mode == 9 or self.map_mode == 92: # 9K mode
+                    osu_file_content += f"{x_9K[int(notes_list[i][1])]},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"
         
         # 5. Create and write in the file
         with open(f"{path}/{osu_file_name}", "w", encoding="utf-8") as osu_file:
@@ -277,6 +325,206 @@ class Fnf_chart:
             # player 2 + player 1
             return self.getNotesPlayer(2) + [[p1_notes[i][0],p1_notes[i][1]+4,p1_notes[i][2]] for i in range(len(p1_notes))]
 
+    def getNotes9K(self, player_id):
+        """
+            Class method:
+                Return a list with all notes of 1 player.
+            Arguments:
+                player_id (1, or 2): player id. (1=bf ; 2=ennemy)
+            Return:
+                list of lists with 3 elements: [offset, column, length]
+                The offset is when is the beginning of the note, in ms.
+                The column says on which column is the note. 0=left1 ; 1=down1 ; 2=up1 ; 3=right1 ; 4=center ; 5=left2 ; 6=down2 ; 7=up2 ; 8=right2
+                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
+        """
+        assert player_id==1 or player_id==2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))
+
+        notes_list = []
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)
+
+            for j in range (len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]
+                if right_player and note[1]<=8:
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+                elif not(right_player) and note[1]>=9: # if there is column id over 8 => other player
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 9  # apply modulo 9
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+            
+        notes_list.sort()  # sort the notes by chronological order
+        return notes_list
+
+    def getNotes8K(self, player_id):
+        """
+            Class method:
+                Return a list with all notes of 1 player.
+            Arguments:
+                player_id (1, or 2): player id. (1=bf ; 2=ennemy)
+            Return:
+                list of lists with 3 elements: [offset, column, length]
+                The offset is when is the beginning of the note, in ms.
+                The column says on which column is the note. 0=left1 ; 1=down1 ; 2=up1 ; 3=right1 ; 4=left2 ; 5=down2 ; 6=up2 ; 7=right2
+                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
+        """
+        assert player_id==1 or player_id==2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))
+
+        notes_list = []
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)
+
+            for j in range (len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]
+                if right_player and note[1]<=7:
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+                elif not(right_player) and note[1]>=8: # if there is column id over 7 => other player
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 8  # apply modulo 8
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+            
+        notes_list.sort()  # sort the notes by chronological order
+        return notes_list
+
+    def getNotes7K(self, player_id):
+        """
+            Class method:
+                Return a list with all notes of 1 player.
+            Arguments:
+                player_id (1, or 2): player id. (1=bf ; 2=ennemy)
+            Return:
+                list of lists with 3 elements: [offset, column, length]
+                The offset is when is the beginning of the note, in ms.
+                The column says on which column is the note. 0=left1 ; 1=down ; 2=right1 ; 3=center ; 4=left2 ; 5=top ; 6=right2
+                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
+        """
+        assert player_id==1 or player_id==2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))
+
+        notes_list = []
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)
+
+            for j in range (len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]
+                if right_player and note[1]<=6:
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+                elif not(right_player) and note[1]>=7: # if there is column id over 6 => other player
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 7  # apply modulo 7
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+            
+        notes_list.sort()  # sort the notes by chronological order
+        return notes_list
+
+    def getNotes6K(self, player_id):
+        """
+            Class method:
+                Return a list with all notes of 1 player.
+            Arguments:
+                player_id (1, or 2): player id. (1=bf ; 2=ennemy)
+            Return:
+                list of lists with 3 elements: [offset, column, length]
+                The offset is when is the beginning of the note, in ms.
+                The column says on which column is the note. 0=left1 ; 1=down ; 2=right1 ; 3=left2 ; 4=top ; 5=right2
+                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
+        """
+        assert player_id==1 or player_id==2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))
+
+        notes_list = []
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)
+
+            for j in range (len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]
+                if right_player and note[1]<=5:
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+                elif not(right_player) and note[1]>=6: # if there is column id over 5 => other player
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 6  # apply modulo 6
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+            
+        notes_list.sort()  # sort the notes by chronological order
+        return notes_list
+
+    def getNotes5K(self, player_id):
+        """
+            Class method:
+                Return a list with all notes of 1 player.
+            Arguments:
+                player_id (1 or 2): player id. (1=bf ; 2=ennemy)
+            Return:
+                list of lists with 3 elements: [offset, column, length]
+                The offset is when is the beginning of the note, in ms.
+                The column says on which column is the note. 0=left ; 1=down ; 2=center ; 3=top ; 4=right
+                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
+        """
+        assert player_id==1 or player_id==2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as dict
+
+        notes_list = []  # the list we want (list of [note_start, column, note_end])
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)  # if the section is to the player we want
+            # notes for the right player
+            for j in range(len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]  # the note (list of 3 elements to add)
+                if right_player and note[1]<=4:
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+                elif not(right_player) and note[1]>=5: # if there is column id over 4 => other player
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 5  # apply modulo 5
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have negative value -> simple note
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
+
+        notes_list.sort()  # sort the notes by chronological order
+        return notes_list
+
     def getNotesPlayer(self, player_id):
         """
             Class method:
@@ -297,40 +545,24 @@ class Fnf_chart:
         for i in range(len(json_data["song"]["notes"])):
             element = json_data["song"]["notes"][i]
             right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)  # if the section is to the player we want
-            
             # notes for the right player
             for j in range(len(element["sectionNotes"])):
-                note = element["sectionNotes"][j]  # get the note (list of 3 elements to add)
-
-                # clean the note to remove extra arguments that cause crashes (#19)
-                # remove non-numbers arguments
-                k = 0
-                while k < len(note):
-                    if type(note[k]) == str and not(is_a_float(note[k])):  # str which is not an number
-                        del note[k]  # remove it from the list
-                    else:
-                        if type(note[k]) == str:  # convert to float
-                            note[k] = float(note[k])
-                        k += 1  # check the next index
-
-                if len(note) < 3:  # if we have less than 3 arguments -> note ignored
-                    pass  # do nothing
-                # if there are after the cleaning, more than 3 arguments, the arguments after index 2 are ignored
-                elif right_player and note[1]<=3:
+                note = element["sectionNotes"][j]  # the note (list of 3 elements to add)
+                if right_player and note[1]<=3:
                     note[0] = int(note[0])  # round and apply offset
                     note[2] = int(note[2])  # round offset
                     if note[2] < 0:
                         note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(note)
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
                 elif not(right_player) and note[1]>=4:  # if there is column id over 3 => other player
                     note[0] = int(note[0])  # round offset
                     note[1] %= 4  # apply modulo 4
                     note[2] = int(note[2])  # round offset
                     if note[2] < 0:
                         note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(note)       
+                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))       
 
-        notes_list = sorted(notes_list, key=itemgetter(0))  # sort the notes by chronological order (using the index 0)
+        notes_list.sort()  # sort the notes by chronological order (using the index 0)
         return notes_list
 
     def getScrollSpeed(self):
@@ -577,9 +809,16 @@ class Osz_converter:
             else:
                 self.osz_path = self.osz_name
             # create the .osz (basically a .zip)
-            with ZipFile(self.osz_path, "w") as zip_object:  # create a zip object and open it
-                for file in os.listdir(self.folder_path):  # for each file in the folder
-                    zip_object.write(f"{self.folder_path}/{file}")
+            shutil.make_archive(self.folder_path, "zip", self.folder_path) # create a zip with all files created
+
+            if os.path.isfile(self.osz_path): # checking if file exists, if it does, add a number to its name
+                count = 1
+                self.osz_path = self.folder_path + f" ({count}).osz"
+                while os.path.isfile(self.osz_path):
+                    count+= 1
+                    self.osz_path = self.folder_path + f" ({count}).osz"
+
+            os.rename(f"{self.folder_path}.zip", f"{self.osz_path}") # changing the extension file from ".zip" to ".osz" by renaming it
 
             # 6. remove the created folder (because now the files are in the .osz)
             self.status("Removing previously generated folder...")
@@ -653,52 +892,6 @@ def fileExists(file_path):
         return False
     else:
         return True
-
-def is_a_float(string_to_verify):
-    """ 
-        Method:
-            Verify if a str can be converted to float. 
-        Argument:
-            string_to_verify (str): the str to test. 
-        Return:
-            (bool): returns True if the conversion is possible.
-    """
-
-    # it's just going to try to convert...
-    a = 0.0  # just a random variable
-    can_be_converted = False
-
-    try:
-        a = float(string_to_verify)
-    except:  # failed
-        can_be_converted = False
-    else:  # he did it
-        can_be_converted = True
-    
-    return can_be_converted
-
-def is_a_int(string_to_verify):
-    """ 
-        Method:
-            Verify if a str can be converted to int. 
-        Argument:
-            string_to_verify (str): the str to test. 
-        Return:
-            (bool): returns True if the conversion is possible.
-    """
-
-    # it's just going to try to convert...
-    a = 0  # just a random variable
-    can_be_converted = False
-
-    try:
-        a = int(string_to_verify)
-    except:  # failed
-        can_be_converted = False
-    else:  # he did it
-        can_be_converted = True
-    
-    return can_be_converted
 
 def jsonRemoveExtraData(file_path):
     """
@@ -779,17 +972,16 @@ def percentTodB(percent):
 def removeIllegalCharacters(string_to_modify):
     """ 
         Method:
-            Removes unauthorized characters for file names from a string.
+            Removes unautorized characters for file names from a string.
         Argument:
             string_to_modify (str): the str to edit.
         Return:
             (str): modified str without the annoying characters we don't want.
     """
-    unauthorized_characters = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
-    result = string_to_modify
+    unautorized_characters = ['"', '<', '>', '|', '?', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\n', '\x0b', '\x0c', '\r', '\x0e', '\x0f', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1a', '\x1b', '\x1c', '\x1d', '\x1e', '\x1f', ':', '*', '?', '\\', '/']
 
-    for char in unauthorized_characters:  # invalid characters
-        result = result.replace(char, "")
+    for char in unautorized_characters:  # invalid characters
+        result = string_to_modify.replace(char, "")
 
     if result[-1] == "." or result[-1] == " ":  # invalid ending name
         result = result[0:-1] + "_"
