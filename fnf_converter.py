@@ -361,7 +361,7 @@ class Fnf_chart:
                     if note[2] < 0:
                         note[2] = 0  # if we have negative value -> simple note
                     notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-            
+
         notes_list.sort()  # sort the notes by chronological order
         return notes_list
 
@@ -401,7 +401,7 @@ class Fnf_chart:
                     if note[2] < 0:
                         note[2] = 0  # if we have negative value -> simple note
                     notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-            
+
         notes_list.sort()  # sort the notes by chronological order
         return notes_list
 
@@ -441,7 +441,7 @@ class Fnf_chart:
                     if note[2] < 0:
                         note[2] = 0  # if we have negative value -> simple note
                     notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-            
+
         notes_list.sort()  # sort the notes by chronological order
         return notes_list
 
@@ -481,7 +481,7 @@ class Fnf_chart:
                     if note[2] < 0:
                         note[2] = 0  # if we have negative value -> simple note
                     notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-            
+
         notes_list.sort()  # sort the notes by chronological order
         return notes_list
 
@@ -545,10 +545,26 @@ class Fnf_chart:
         for i in range(len(json_data["song"]["notes"])):
             element = json_data["song"]["notes"][i]
             right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)  # if the section is to the player we want
+            
             # notes for the right player
             for j in range(len(element["sectionNotes"])):
-                note = element["sectionNotes"][j]  # the note (list of 3 elements to add)
-                if right_player and note[1]<=3:
+                note = element["sectionNotes"][j]  # get the note (list of 3 elements to add)
+
+                # clean the note to remove extra arguments that cause crashes (#19)
+                # remove non-numbers arguments
+                k = 0
+                while k < len(note):
+                    if type(note[k]) == str and not(is_a_float(note[k])):  # str which is not an number
+                        del note[k]  # remove it from the list
+                    else:
+                        if type(note[k]) == str:  # convert to float
+                            note[k] = float(note[k])
+                        k += 1  # check the next index
+
+                if len(note) < 3:  # if we have less than 3 arguments -> note ignored
+                    pass  # do nothing
+                # if there are after the cleaning, more than 3 arguments, the arguments after index 2 are ignored
+                elif right_player and note[1]<=3:
                     note[0] = int(note[0])  # round and apply offset
                     note[2] = int(note[2])  # round offset
                     if note[2] < 0:
@@ -893,6 +909,52 @@ def fileExists(file_path):
     else:
         return True
 
+def is_a_float(string_to_verify):
+    """ 
+        Method:
+            Verify if a str can be converted to float. 
+        Argument:
+            string_to_verify (str): the str to test. 
+        Return:
+            (bool): returns True if the conversion is possible.
+    """
+
+    # it's just going to try to convert...
+    a = 0.0  # just a random variable
+    can_be_converted = False
+
+    try:
+        a = float(string_to_verify)
+    except:  # failed
+        can_be_converted = False
+    else:  # he did it
+        can_be_converted = True
+    
+    return can_be_converted
+
+def is_a_int(string_to_verify):
+    """ 
+        Method:
+            Verify if a str can be converted to int. 
+        Argument:
+            string_to_verify (str): the str to test. 
+        Return:
+            (bool): returns True if the conversion is possible.
+    """
+
+    # it's just going to try to convert...
+    a = 0  # just a random variable
+    can_be_converted = False
+
+    try:
+        a = int(string_to_verify)
+    except:  # failed
+        can_be_converted = False
+    else:  # he did it
+        can_be_converted = True
+    
+    return can_be_converted
+
 def jsonRemoveExtraData(file_path):
     """
         Method:
@@ -979,6 +1041,7 @@ def removeIllegalCharacters(string_to_modify):
             (str): modified str without the annoying characters we don't want.
     """
     unauthorized_characters = ['"', '<', '>', '|', '?', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\n', '\x0b', '\x0c', '\r', '\x0e', '\x0f', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1a', '\x1b', '\x1c', '\x1d', '\x1e', '\x1f', ':', '*', '?', '\\', '/']
+    result = string_to_modify
 
     for char in unauthorized_characters:  # invalid characters
         result = string_to_modify.replace(char, "")
