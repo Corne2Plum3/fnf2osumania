@@ -505,10 +505,24 @@ class Fnf_chart:
         for i in range(len(json_data["song"]["notes"])):
             element = json_data["song"]["notes"][i]
             right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)  # if the section is to the player we want
+
             # notes for the right player
             for j in range(len(element["sectionNotes"])):
-                note = element["sectionNotes"][j]  # the note (list of 3 elements to add)
-                if right_player and note[1]<=4:
+                note = element["sectionNotes"][j]  # get the note (list of 3 elements to add)
+
+                # clean the note to remove extra arguments that cause crashes (#19)
+                # remove non-numbers arguments
+                k = 0
+                while k < len(note):
+                    if type(note[k]) == str and not(is_a_float(note[k])):  # str which is not an number
+                        del note[k]  # remove it from the list
+                    else:
+                        k += 1  # check the next index
+
+                if len(note) < 3:  # if we have less than 3 arguments -> note ignored
+                    pass  # do nothing
+                # if there are after the cleaning, more than 3 arguments, the arguments after index 2 are ignored
+                elif right_player and note[1]<=4:
                     note[0] = int(note[0])  # round and apply offset
                     note[2] = int(note[2])  # round offset
                     if note[2] < 0:
