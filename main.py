@@ -1232,14 +1232,5 @@ def main():
 
 # WHERE THE PROGRAM STARTS :
 
-try:
-    os.makedirs("output", exist_ok=True)  # create output folder if not exists
-    root = Main_window()  # app window
-    root.openWindow()
-
-except SystemExit:  # don't call error message when SystemExit is raised
-    pass
-
-except:
-    error_window = Crash_window(traceback.format_exc())
-    error_window.openWindow()
+if __name__ == "__main__":
+    main()
