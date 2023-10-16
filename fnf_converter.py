@@ -211,7 +211,7 @@ class Fnf_chart:
         else:  # idk how it's possible to finish here
             notes_list = []
 
-        notes_list.sort()  # sort the notes by offset order (using the index 0)
+        notes_list.sort(key=lambda note: ' '.join(map(str, note[:3])))  # sort the notes by offset order (using the index 0) and ignore any argument, if argument count exceeds 3
 
         # convert to osu notes
         note_type = 0  # used to determinate the 4th parameter of a hitobject. 1=normal note, 128=long note, +4=new combo
