@@ -327,272 +327,290 @@ class Fnf_chart:
 
     def getNotes9K(self, player_id):
         """
-            Class method:
-                Return a list with all notes of 1 player.
-            Arguments:
-                player_id (1, or 2): player id. (1=bf ; 2=ennemy)
-            Return:
-                list of lists with 3 elements: [offset, column, length]
-                The offset is when is the beginning of the note, in ms.
-                The column says on which column is the note. 0=left1 ; 1=down1 ; 2=up1 ; 3=right1 ; 4=center ; 5=left2 ; 6=down2 ; 7=up2 ; 8=right2
-                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
+        Class method:
+        Return a list with all notes of 1 player.
+        Arguments:
+        player_id (1 or 2): player id. (1=bf ; 2=enemy)
+        Return:
+        list of lists with 3 elements: [offset, column, length]
+        The offset is when is the beginning of the note, in ms.
+        The column says on which column is the note. 0=left ; 1=down ; 2=up ; 3=right ; 4=center ; 5=left ; 6=down; 7=up ; 8=right
+        The length is how much time we have to hold the note, in ms. A simple note has 0 as length.
         """
-        assert player_id==1 or player_id==2
+        assert player_id == 1 or player_id == 2
 
-        json_data = json.loads(jsonRemoveExtraData(self.map_path))
-
-        notes_list = []
-        for i in range(len(json_data["song"]["notes"])):
-            element = json_data["song"]["notes"][i]
-            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)
-
-            for j in range (len(element["sectionNotes"])):
-                note = element["sectionNotes"][j]
-                if right_player and note[1]<=8:
-                    note[0] = int(note[0])  # round and apply offset
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-                elif not(right_player) and note[1]>=9: # if there is column id over 8 => other player
-                    note[0] = int(note[0])  # round offset
-                    note[1] %= 9  # apply modulo 9
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-
-        notes_list.sort()  # sort the notes by chronological order
-        return notes_list
-
-    def getNotes8K(self, player_id):
-        """
-            Class method:
-                Return a list with all notes of 1 player.
-            Arguments:
-                player_id (1, or 2): player id. (1=bf ; 2=ennemy)
-            Return:
-                list of lists with 3 elements: [offset, column, length]
-                The offset is when is the beginning of the note, in ms.
-                The column says on which column is the note. 0=left1 ; 1=down1 ; 2=up1 ; 3=right1 ; 4=left2 ; 5=down2 ; 6=up2 ; 7=right2
-                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
-        """
-        assert player_id==1 or player_id==2
-
-        json_data = json.loads(jsonRemoveExtraData(self.map_path))
-
-        notes_list = []
-        for i in range(len(json_data["song"]["notes"])):
-            element = json_data["song"]["notes"][i]
-            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)
-
-            for j in range (len(element["sectionNotes"])):
-                note = element["sectionNotes"][j]
-                if right_player and note[1]<=7:
-                    note[0] = int(note[0])  # round and apply offset
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-                elif not(right_player) and note[1]>=8: # if there is column id over 7 => other player
-                    note[0] = int(note[0])  # round offset
-                    note[1] %= 8  # apply modulo 8
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-
-        notes_list.sort()  # sort the notes by chronological order
-        return notes_list
-
-    def getNotes7K(self, player_id):
-        """
-            Class method:
-                Return a list with all notes of 1 player.
-            Arguments:
-                player_id (1, or 2): player id. (1=bf ; 2=ennemy)
-            Return:
-                list of lists with 3 elements: [offset, column, length]
-                The offset is when is the beginning of the note, in ms.
-                The column says on which column is the note. 0=left1 ; 1=down ; 2=right1 ; 3=center ; 4=left2 ; 5=top ; 6=right2
-                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
-        """
-        assert player_id==1 or player_id==2
-
-        json_data = json.loads(jsonRemoveExtraData(self.map_path))
-
-        notes_list = []
-        for i in range(len(json_data["song"]["notes"])):
-            element = json_data["song"]["notes"][i]
-            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)
-
-            for j in range (len(element["sectionNotes"])):
-                note = element["sectionNotes"][j]
-                if right_player and note[1]<=6:
-                    note[0] = int(note[0])  # round and apply offset
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-                elif not(right_player) and note[1]>=7: # if there is column id over 6 => other player
-                    note[0] = int(note[0])  # round offset
-                    note[1] %= 7  # apply modulo 7
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-
-        notes_list.sort()  # sort the notes by chronological order
-        return notes_list
-
-    def getNotes6K(self, player_id):
-        """
-            Class method:
-                Return a list with all notes of 1 player.
-            Arguments:
-                player_id (1, or 2): player id. (1=bf ; 2=ennemy)
-            Return:
-                list of lists with 3 elements: [offset, column, length]
-                The offset is when is the beginning of the note, in ms.
-                The column says on which column is the note. 0=left1 ; 1=down ; 2=right1 ; 3=left2 ; 4=top ; 5=right2
-                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
-        """
-        assert player_id==1 or player_id==2
-
-        json_data = json.loads(jsonRemoveExtraData(self.map_path))
-
-        notes_list = []
-        for i in range(len(json_data["song"]["notes"])):
-            element = json_data["song"]["notes"][i]
-            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)
-
-            for j in range (len(element["sectionNotes"])):
-                note = element["sectionNotes"][j]
-                if right_player and note[1]<=5:
-                    note[0] = int(note[0])  # round and apply offset
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-                elif not(right_player) and note[1]>=6: # if there is column id over 5 => other player
-                    note[0] = int(note[0])  # round offset
-                    note[1] %= 6  # apply modulo 6
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-
-        notes_list.sort()  # sort the notes by chronological order
-        return notes_list
-
-    def getNotes5K(self, player_id):
-        """
-            Class method:
-                Return a list with all notes of 1 player.
-            Arguments:
-                player_id (1 or 2): player id. (1=bf ; 2=ennemy)
-            Return:
-                list of lists with 3 elements: [offset, column, length]
-                The offset is when is the beginning of the note, in ms.
-                The column says on which column is the note. 0=left ; 1=down ; 2=center ; 3=top ; 4=right
-                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
-        """
-        assert player_id==1 or player_id==2
-
-        json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as dict
-
-        notes_list = []  # the list we want (list of [note_start, column, note_end])
-        for i in range(len(json_data["song"]["notes"])):
-            element = json_data["song"]["notes"][i]
-            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)  # if the section is to the player we want
-
-            # notes for the right player
-            for j in range(len(element["sectionNotes"])):
-                note = element["sectionNotes"][j]  # get the note (list of 3 elements to add)
-
-                # clean the note to remove extra arguments that cause crashes (#19)
-                # remove non-numbers arguments
-                k = 0
-                while k < len(note):
-                    if type(note[k]) == str and not(is_a_float(note[k])):  # str which is not an number
-                        del note[k]  # remove it from the list
-                    else:
-                        k += 1  # check the next index
-
-                if len(note) < 3:  # if we have less than 3 arguments -> note ignored
-                    pass  # do nothing
-                # if there are after the cleaning, more than 3 arguments, the arguments after index 2 are ignored
-                elif right_player and note[1]<=4:
-                    note[0] = int(note[0])  # round and apply offset
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-                elif not(right_player) and note[1]>=5: # if there is column id over 4 => other player
-                    note[0] = int(note[0])  # round offset
-                    note[1] %= 5  # apply modulo 5
-                    note[2] = int(note[2])  # round offset
-                    if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-
-        notes_list.sort()  # sort the notes by chronological order
-        return notes_list
-
-    def getNotesPlayer(self, player_id):
-        """
-            Class method:
-                Return a list with all notes of 1 player.
-            Arguments:
-                player_id (1 or 2): player id. (1=bf ; 2=ennemy)
-            Return:
-                list of lists with 3 elements: [offset, column, length]
-                The offset is when is the beginning of the note, in ms.
-                The column says on which column is the note. 0=left ; 1=down ; 2=top ; 3=right
-                The length is how much time we have to hold the note, in ms. A simple note have 0 as length.
-        """
-        assert player_id==1 or player_id==2
-
-        json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as dict
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as a dictionary
 
         notes_list = []  # the list we want (list of [note_start_time, column, note_length])
         for i in range(len(json_data["song"]["notes"])):
             element = json_data["song"]["notes"][i]
-            right_player = (player_id==1 and element["mustHitSection"]==True) or (player_id==2 and element["mustHitSection"]==False)  # if the section is to the player we want
-            
-            # notes for the right player
+            right_player = (player_id == 1 and element["mustHitSection"] == True) or (player_id == 2 and element["mustHitSection"] == False)
+
+            # Notes for the right player
             for j in range(len(element["sectionNotes"])):
-                note = element["sectionNotes"][j]  # get the note (list of 3 elements to add)
+                note = element["sectionNotes"][j]
 
-                # clean the note to remove extra arguments that cause crashes (#19)
-                # remove non-numbers arguments
-                k = 0
-                while k < len(note):
-                    if type(note[k]) == str and not(is_a_float(note[k])):  # str which is not an number
-                        del note[k]  # remove it from the list
-                    else:
-                        if type(note[k]) == str:  # convert to float
-                            note[k] = float(note[k])
-                        k += 1  # check the next index
+                # Clean the note to remove extra arguments that cause crashes
+                # Remove non-numbers arguments and convert to float
+                note = [float(val) if isinstance(val, str) and is_a_float(val) else val for val in note]
 
-                if len(note) < 3:  # if we have less than 3 arguments -> note ignored
-                    pass  # do nothing
-                # if there are after the cleaning, more than 3 arguments, the arguments after index 2 are ignored
-                elif right_player and note[1]<=3:
+                if len(note) < 3:  # If we have less than 3 arguments, the note is ignored
+                    continue
+                elif right_player and note[1] <= 8:  # Supporting 9 columns
                     note[0] = int(note[0])  # round and apply offset
                     note[2] = int(note[2])  # round offset
                     if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))
-                elif not(right_player) and note[1]>=4:  # if there is column id over 3 => other player
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+                elif not right_player and note[1] >= 9:  # Supporting 9 columns
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 9  # apply modulo 9
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+
+        notes_list = sorted(notes_list, key=lambda x: x[0])  # sort the notes by chronological order (using the index 0)
+        return notes_list
+
+    def getNotes8K(self, player_id):
+        """
+        Class method:
+        Return a list with all notes of 1 player.
+        Arguments:
+        player_id (1 or 2): player id. (1=bf ; 2=enemy)
+        Return:
+        list of lists with 3 elements: [offset, column, length]
+        The offset is when is the beginning of the note, in ms.
+        The column says on which column is the note. 0=left ; 1=down ; 2=up ; 3=right ; 4=left ; 5=down; 6=up ; 7=right
+        The length is how much time we have to hold the note, in ms. A simple note has 0 as length.
+        """
+        assert player_id == 1 or player_id == 2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as a dictionary
+
+        notes_list = []  # the list we want (list of [note_start_time, column, note_length])
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id == 1 and element["mustHitSection"] == True) or (player_id == 2 and element["mustHitSection"] == False)
+
+            # Notes for the right player
+            for j in range(len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]
+
+                # Clean the note to remove extra arguments that cause crashes
+                # Remove non-numbers arguments and convert to float
+                note = [float(val) if isinstance(val, str) and is_a_float(val) else val for val in note]
+
+                if len(note) < 3:  # If we have less than 3 arguments, the note is ignored
+                    continue
+                elif right_player and note[1] <= 7:  # Supporting 8 columns
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+                elif not right_player and note[1] >= 8:  # Supporting 8 columns
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 8  # apply modulo 8
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+
+        notes_list = sorted(notes_list, key=lambda x: x[0])  # sort the notes by chronological order (using the index 0)
+        return notes_list
+
+    def getNotes7K(self, player_id):
+        """
+        Class method:
+        Return a list with all notes of 1 player.
+        Arguments:
+        player_id (1 or 2): player id. (1=bf ; 2=enemy)
+        Return:
+        list of lists with 3 elements: [offset, column, length]
+        The offset is when is the beginning of the note, in ms.
+        The column says on which column is the note. 0=left ; 1=up ; 2=right ; 3=center ; 4=left ; 5=down ; 6=right
+        The length is how much time we have to hold the note, in ms. A simple note has 0 as length.
+        """
+        assert player_id == 1 or player_id == 2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as a dictionary
+
+        notes_list = []  # the list we want (list of [note_start_time, column, note_length])
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id == 1 and element["mustHitSection"] == True) or (player_id == 2 and element["mustHitSection"] == False)
+
+            # Notes for the right player
+            for j in range(len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]
+
+                # Clean the note to remove extra arguments that cause crashes
+                # Remove non-numbers arguments and convert to float
+                note = [float(val) if isinstance(val, str) and is_a_float(val) else val for val in note]
+
+                if len(note) < 3:  # If we have less than 3 arguments, the note is ignored
+                    continue
+                elif right_player and note[1] <= 6:  # Supporting 7 columns
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+                elif not right_player and note[1] >= 7:  # Supporting 7 columns
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 7  # apply modulo 7
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+
+        notes_list = sorted(notes_list, key=lambda x: x[0])  # sort the notes by chronological order (using the index 0)
+        return notes_list
+
+    def getNotes6K(self, player_id):
+        """
+        Class method:
+        Return a list with all notes of 1 player.
+        Arguments:
+        player_id (1 or 2): player id. (1=bf ; 2=enemy)
+        Return:
+        list of lists with 3 elements: [offset, column, length]
+        The offset is when is the beginning of the note, in ms.
+        The column says on which column is the note. 0=left ; 1=up ; 2=right ; 3=left ; 4=down ; 5=right
+        The length is how much time we have to hold the note, in ms. A simple note has 0 as length.
+        """
+        assert player_id == 1 or player_id == 2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as a dictionary
+
+        notes_list = []  # the list we want (list of [note_start_time, column, note_length])
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id == 1 and element["mustHitSection"] == True) or (player_id == 2 and element["mustHitSection"] == False)
+
+            # Notes for the right player
+            for j in range(len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]
+
+                # Clean the note to remove extra arguments that cause crashes
+                # Remove non-numbers arguments and convert to float
+                note = [float(val) if isinstance(val, str) and is_a_float(val) else val for val in note]
+
+                if len(note) < 3:  # If we have less than 3 arguments, the note is ignored
+                    continue
+                elif right_player and note[1] <= 5:  # Supporting 6 columns
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+                elif not right_player and note[1] >= 6:  # Supporting 6 columns
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 6  # apply modulo 6
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+
+        notes_list = sorted(notes_list, key=lambda x: x[0])  # sort the notes by chronological order (using the index 0)
+        return notes_list
+
+    def getNotes5K(self, player_id):
+        """
+        Class method:
+        Return a list with all notes of 1 player.
+        Arguments:
+        player_id (1 or 2): player id. (1=bf ; 2=enemy)
+        Return:
+        list of lists with 3 elements: [offset, column, length]
+        The offset is when is the beginning of the note, in ms.
+        The column says on which column is the note. 0=left ; 1=down ; 2=center ; 3=up ; 4=right
+        The length is how much time we have to hold the note, in ms. A simple note has 0 as length.
+        """
+        assert player_id == 1 or player_id == 2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as a dictionary
+
+        notes_list = []  # the list we want (list of [note_start_time, column, note_length])
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id == 1 and element["mustHitSection"] == True) or (player_id == 2 and element["mustHitSection"] == False)
+
+            # Notes for the right player
+            for j in range(len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]
+
+                # Clean the note to remove extra arguments that cause crashes
+                # Remove non-numbers arguments and convert to float
+                note = [float(val) if isinstance(val, str) and is_a_float(val) else val for val in note]
+
+                if len(note) < 3:  # If we have less than 3 arguments, the note is ignored
+                    continue
+                elif right_player and note[1] <= 4:  # Supporting 5 columns
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+                elif not right_player and note[1] >= 5:  # Supporting 5 columns
+                    note[0] = int(note[0])  # round offset
+                    note[1] %= 5  # apply modulo 5
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+
+        notes_list = sorted(notes_list, key=lambda x: x[0])  # sort the notes by chronological order (using the index 0)
+        return notes_list
+
+    def getNotesPlayer(self, player_id):
+        """
+        Class method:
+        Return a list with all notes of 1 player.
+        Arguments:
+        player_id (1 or 2): player id. (1=bf ; 2=enemy)
+        Return:
+        list of lists with 3 elements: [offset, column, length]
+        The offset is when is the beginning of the note, in ms.
+        The column says on which column is the note. 0=left ; 1=down ; 2=up ; 3=right
+        The length is how much time we have to hold the note, in ms. A simple note has 0 as length.
+        """
+        assert player_id == 1 or player_id == 2
+
+        json_data = json.loads(jsonRemoveExtraData(self.map_path))  # parse the file as a dictionary
+
+        notes_list = []  # the list we want (list of [note_start_time, column, note_length])
+        for i in range(len(json_data["song"]["notes"])):
+            element = json_data["song"]["notes"][i]
+            right_player = (player_id == 1 and element["mustHitSection"] == True) or (player_id == 2 and element["mustHitSection"] == False)
+
+            # Notes for the right player
+            for j in range(len(element["sectionNotes"])):
+                note = element["sectionNotes"][j]
+
+                # Clean the note to remove extra arguments that cause crashes
+                # Remove non-numbers arguments and convert to float
+                note = [float(val) if isinstance(val, str) and is_a_float(val) else val for val in note]
+
+                if len(note) < 3:  # If we have less than 3 arguments, the note is ignored
+                    continue
+                elif right_player and note[1] <= 3:  # Supporting 4 columns
+                    note[0] = int(note[0])  # round and apply offset
+                    note[2] = int(note[2])  # round offset
+                    if note[2] < 0:
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
+                elif not right_player and note[1] >= 4:  # Supporting 4 columns
                     note[0] = int(note[0])  # round offset
                     note[1] %= 4  # apply modulo 4
                     note[2] = int(note[2])  # round offset
                     if note[2] < 0:
-                        note[2] = 0  # if we have negative value -> simple note
-                    notes_list.append(list(filter(lambda x: type(x) == int or type(x) == float, note)))       
+                        note[2] = 0  # if we have a negative value, it's a simple note
+                    notes_list.append(note)
 
-        notes_list.sort()  # sort the notes by chronological order (using the index 0)
+        notes_list = sorted(notes_list, key=lambda x: x[0])  # sort the notes by chronological order (using the index 0)
         return notes_list
 
     def getScrollSpeed(self):
