@@ -281,8 +281,8 @@ class Fnf_chart:
 						bpm_list.append([element["sectionNotes"][0][0], element["bpm"]])
 			
 		# if the still empty (custom bpm defined or no timing points found: we suppose there is only 1 BPM change)
-		if bpm_list==[]:
-			bpm_list = [[self.getNotesAll8K()[0][0], self.getBPM()]]
+		if bpm_list == []:
+			bpm_list = [[self.getNotesFromPlayer(0, 99)[0][0], self.getBPM()]]
 
 		return bpm_list
 
