@@ -207,10 +207,12 @@ class Fnf_chart:
 		elif (self.map_mode % 10) == 5:  # co-op player_1 player_2
 			notes_left = self.getNotesFromPlayer(1, keys_count)
 			notes_right = self.getNotesFromPlayer(2, keys_count)
-			print(notes_right)
 			notes_list = self.concatenateCharts(notes_left, notes_right, int(keys_count/2))
 		else:  # idk how it's possible to finish here
 			notes_list = []
+
+		# removes the overlaps
+		notes_list = self.removeOverlaps(notes_list, keys_count)
 
 		# convert to osu notes
 		note_type = 0  # used to determinate the 4th parameter of a hitobject. 1=normal note, 128=long note, +4=new combo
@@ -222,7 +224,7 @@ class Fnf_chart:
 				if i == 0:  # first note
 					note_type += 4  # add new combo (binary: 0000 0100)
 				# generate the note in the osu file
-				osu_file_content += f"{notes_list[i][1]/keys_count*512},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
+				osu_file_content += f"{int(notes_list[i][1]/keys_count*512)},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
 
 			else:  # long/hold note
 				# calculate note_type
@@ -230,7 +232,7 @@ class Fnf_chart:
 				if i == 0:  # first note
 					note_type += 4  # add new combo (binary: 0000 0100)
 				# generate the note in the osu file
-				osu_file_content += f"{notes_list[i][1]/keys_count*512},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"
+				osu_file_content += f"{int(notes_list[i][1]/keys_count*512)},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"
 		
 		# 5. Create and write in the file
 		with open(f"{path}/{osu_file_name}", "w", encoding="utf-8") as osu_file:
@@ -321,7 +323,7 @@ class Fnf_chart:
 
 		# the list we want (list of [note_start_time (0), column (1), note_length (2)])
 		notes_list = []
-			
+		
 		for section in json_data["song"]["notes"]:  # for each section...
 			# check if the section is from the player we're looking at (if we're looking at all players it will be always false)
 			is_player_section = (player_id != 0) and (player_id == 1 and section["mustHitSection"] == True) or (player_id == 2 and section["mustHitSection"] == False)
@@ -331,7 +333,6 @@ class Fnf_chart:
 				note = section["sectionNotes"][i]
 				# Clean the note to remove extra arguments that cause crashes. Remove non-numbers arguments and convert to int
 				note = [int(val) if isinstance(val, int) and is_a_int(val) else val for val in note]
-				# Get rid of useless arguments
 				note = note[0:3]  # only keep the 3 first elemnts of the list
 
 				# If we have less than 3 arguments, the note is ignored
@@ -340,17 +341,19 @@ class Fnf_chart:
 				
 				# Add the note on the list if it's for the player
 				if is_player_section and note[1] < keys_count:  # the section is for the player, then get only columns 0 to keys_count-1
-					note[0] = int(note[0])  # round and apply offset
+					note[0] = int(note[0])
 					note[2] = int(note[2]) if (int(note[2]) >= 0) else 0  # round and set 0 if the length is negative
 					notes_list.append(note)
 				elif not is_player_section and ((player_id == 0) or (note[1] >= keys_count)):  # the section isn't for the player, exclude columns 0 to keys_count-1 OR we want all notes regardless of the player
-					note[0] = int(note[0])  # round and apply offset
+					note[0] = int(note[0])
 					note[1] %= keys_count  # apply modulo keys_count
 					note[2] = int(note[2]) if (int(note[2]) >= 0) else 0  # round and set 0 if the length is negative
 					notes_list.append(note)
-			   
-		notes_list.sort(key=lambda note: ' '.join(map(str, note[:3]))) # sort the notes by offset order (using the index 0) and ignore any argument, if argument count exceeds 3
 
+		# notes_list.sort(key=lambda note: ' '.join(map(str, note[:3]))) # sort the notes by offset order (using the index 0) and ignore any argument, if argument count exceeds 3
+		# ^removed as it may geenrate memory leaks and fill your RAM wtf (on Linux with kubuntu 23.10)
+		notes_list.sort(key=lambda x: x[0])  # sort the notes by offset order
+		
 		return notes_list
 		
 	def getScrollSpeed(self):
@@ -409,6 +412,84 @@ class Fnf_chart:
 
 		return bpm_list
 
+	def removeOverlaps(self, notes_list, keys_count):
+		"""
+			Class method:
+				Removes the notes that overlap each others.
+				Takes as an argument a list of notes, and returns a new one, with all of the overlaps removed.
+			Arguments:
+				notes_list: a list in the format [offset (int), column (int), length (int)], usually an output from self.getNotesFromPlayer().
+				keys_count: the amount of key in the chart. All columns out of the range of keys_count will be lost.
+			Returns:
+				A new list of notes in the format [offset (int), column (int), length (int)]
+		"""
+
+		final_notes = []  # output
+
+		# split the list of notes by their columns
+		notes_list_c = []  # structure
+		# separate each notes by columns
+		for i in range(keys_count):
+			notes_list_c.append([])
+		for note in notes_list:  # fill
+			if (len(note) >= 3) and (note[1] < keys_count):
+				notes_list_c[note[1]].append(note)
+
+		# remove the overlaps
+		for notes_column in notes_list_c:  # for each column
+
+			if len(notes_column) <= 0:  # the column is empty
+			
+				notes_list_c.append([])  # add an empty column
+			
+			else:  # the column isn't empty
+				# gets the "points" columns
+				points = []  # a list of list with [time (int), type (int)] with time in ms and type: 1 = clickable (simple note or start of a long note) and 0 = the end of a long note
+				for note in notes_column:
+					if note[2] == 0:  # simple note
+						points.append([note[0], 1])
+					else:  # long note
+						points.append([note[0], 1])
+						points.append([note[0] + note[2], 0])
+				points.sort(key=lambda x: x[0])  # sort by time order
+
+				# remove the duplicate points to have only one at the time (points type = 1 have priority over type = 0)
+				i = 0
+				while i < len(points):
+					# we reached the last element
+					if (i + 1) >= len(points):  # index i+1 doesn't exists
+						i += 1  # it will make exit the while loop
+					else:
+						if abs(points[i][0] - points[i+1][0]) < 2:  # overlap (margin of less than 2 ms because idk I get weird rounding issues)
+							if (points[i][1] == 0) and (points[i+1][1] == 1):  # the only situation where we remove the point at index i
+								del(points[i])
+							else:  # remove the point at index i+1
+								del(points[i+1])
+						else:  # no overlap
+							i += 1
+
+
+				# Build the note
+				column_number = notes_column[0][1]  # is the same for every notes in notes_column
+				i = 0  # i always points towards a clickable note (if there are 2 long notes ends (type = 0) in a row, the 1st one will actually a slider end, and the 2nd one will be clickable)
+				while i < len(points):
+					if (i + 1) < len(points):  # index i+1 exists
+						if points[i+1][1] == 1:  # the point i+1 is a single note -> the point i is a single note
+							final_notes.append([points[i][0], column_number, 0])  # add the note (techcically it will be always a simple note here)
+							i += 1
+						else:  # the point i+1 is the end of a long note -> i and i+1 makes a long note
+							final_notes.append([points[i][0], column_number, points[i+1][0] - points[i][0]])
+							i += 2  # note: i may now points to the end of a long note, this one will be considered clickable
+					else:
+						final_notes.append([points[i][0], column_number, 0])  # add the note (techcically it will be always a simple note here)
+						i += 1
+
+		# sort all notes by chronological order
+		final_notes.sort(key=lambda x: x[0])
+
+		return final_notes
+		
+			
 class Osu_map:
 	"""
 		Object:
@@ -449,7 +530,7 @@ class Osu_map:
 	def addDifficulty(self, diff_name, map_mode, Fnf_chart_path):
 		"""
 			Class method:
-				 Add a difficulty to convert for the beatmapset.
+				Add a difficulty to convert for the beatmapset.
 				If you put a diff name that already exists, it will be replaced by the new one.
 			Arguments:
 				diff_name (str) : the difficulty name (osu! difficulty).
@@ -525,6 +606,8 @@ class Osz_converter:
 				osu_map (Osu_map object): the Osu_map to export.
 			Optional arguments:
 				path (str): where to create the .osz
+			Returns:
+				Nothing.
 		"""
 		try:
 			# 0. Initialization...
