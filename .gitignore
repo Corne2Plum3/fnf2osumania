@@ -1,0 +1,8 @@
+*.spec
+*.zip
+__pycache__/
+build/
+dist/
+output/
+test/
+venv/

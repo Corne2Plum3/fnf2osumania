@@ -35,22 +35,24 @@ try:
         verify_inputs = bool(int(config_data["verify_inputs"]))  # 0 or 1 in the JSON, False or True in this program
 
     # widgets options lists
+    # 2 digits: dozens = keys/player ; units = mode where:
+    #    1 = player 1 ; 2 = player 2 ; 3 = player 1 + 2 ; 4 = co-op ; 5 = co-op swapped
     map_mode_values = {
-        "[4K] Player 1 (Boyfriend)": 1,
-        "[4K] Player 2 (opponent)": 2,
-        "[4K] Players 1 and 2": 3,
-        "[5K] Player 1 (Boyfriend)": 5,
-        "[5K] Player 2 (opponent)": 52,
-        "[6K] Player 1 (Boyfriend)": 6,
-        "[6k] Player 2 (opponent)": 62,
-        "[7K] Player 1 (Boyfriend)": 7,
-        "[7K] Player 2 (opponent)": 72,
-        "[8K] Player 1 (Boyfriend)": 8,
-        "[8K] Player 2 (opponent)": 82,
-        "[8K] 2 players (Co-op)": 42,
-        "[8K] 2 players (swapped) (Co-op)": 422,
-        "[9K] Player 1 (Boyfriend)": 9,
-        "[9K] Player 2 (opponent)": 92
+        "[4K] Player 1 (Boyfriend)": 41,
+        "[4K] Player 2 (Opponent)": 42,
+        "[4K] Players 1 and 2": 43,
+        "[4K] 2 players (8K Co-op)": 44,
+        "[4K] 2 players swapped (8K Co-op)": 45,
+        "[5K] Player 1 (Boyfriend)": 51,
+        "[5K] Player 2 (Opponent)": 52,
+        "[6K] Player 1 (Boyfriend)": 61,
+        "[6k] Player 2 (Opponent)": 62,
+        "[7K] Player 1 (Boyfriend)": 71,
+        "[7K] Player 2 (Opponent)": 72,
+        "[8K] Player 1 (Boyfriend)": 81,
+        "[8K] Player 2 (Opponent)": 82,
+        "[9K] Player 1 (Boyfriend)": 91,
+        "[9K] Player 2 (Opponent)": 92
     }
     map_mode_options = list(map_mode_values.keys())
     meter_options = [f"{i}/4" for i in range(1, 8)]  # 1/4, 2/4, 3/4, ... 7/4
