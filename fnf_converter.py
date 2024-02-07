@@ -331,12 +331,18 @@ class Fnf_chart:
 			for i in range(len(section["sectionNotes"])):  # for each note in the section
 				# get the note
 				note = section["sectionNotes"][i]
-				# Clean the note to remove extra arguments that cause crashes. Remove non-numbers arguments and convert to int
-				note = [int(val) if isinstance(val, int) and is_a_int(val) else val for val in note]
+				# Clean the note to remove extra arguments that cause crashes. Remove non-numbers arguments
+				j = 0
+				while j < len(note):
+					if not is_a_float(note[j]):
+						del note[j]
+					else:
+						j += 1
+				
 				note = note[0:3]  # only keep the 3 first elemnts of the list
 
-				# If we have less than 3 arguments, the note is ignored
-				if len(note) < 3:
+  				# If we have less than 3 arguments or the argument [1] (key number isn't valid) the note is ignored
+				if len(note) < 3 or (not is_a_int(note[1])) or note[1] < 0:
 					continue
 				
 				# Add the note on the list if it's for the player
