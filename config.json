@@ -1,6 +1,6 @@
 {
     "app_name": "fnf2osu!mania converter",
-    "app_version": "1.3.0",
+    "app_version": "1.3.1",
     "check_ffmpeg": 1,
     "colors": {
         "red": "#ff4433",
