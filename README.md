@@ -58,3 +58,9 @@ As a Python program, there's some additional requirements
     * trace
     * webbrowser
     * zipfile
+
+## License
+
+The program is under the MIT License.
+
+**Unless you can legit do it, DO NOT share/upload the maps generated using this program (affects the original games and mods) !**

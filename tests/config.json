@@ -1,0 +1,69 @@
+{
+    "app_name": "fnf2osu!mania converter",
+    "app_version": "1.3.1",
+    "check_ffmpeg": 1,
+    "colors": {
+        "red": "#ff4433",
+        "green": "#33ff33",
+        "link": "#0000ff",
+        "top_background": "#0088bb",
+        "title": "#bb1105"
+    },
+    "delete_files_when_cancel": 1,
+    "init": {
+        "song_title": "tests",
+        "song_artist": "tests",
+        "username": "",
+        "audio_1": "tests/audio_test_658423.ogg",
+        "audio_2": "",
+        "audio_1_volume": 100,
+        "audio_2_volume": 69,
+        "audio_offset": 0,
+        "meter": "4/4",
+        "unique_bpm": 0,
+        "unique_bpm_value": 120.0,
+        "difficulties": {
+            "MILF Hard Player 1": [
+                "[4K] Player 1 (Boyfriend)",
+                "tests/milf-hard.json"
+            ],
+            "MILF Hard Player 2": [
+                "[4K] Player 2 (Opponent)",
+                "tests/milf-hard.json"
+            ],
+            "MILF Hard Player 1+2": [
+                "[4K] Players 1 and 2",
+                "tests/milf-hard.json"
+            ],
+            "MILF Hard Co-op": [
+                "[4K] 2 players (8K Co-op)",
+                "tests/milf-hard.json"
+            ],
+            "MILF Hard Co-op Swapped": [
+                "[4K] 2 players swapped (8K Co-op)",
+                "tests/milf-hard.json"
+            ],
+            "Blocked Hard Player 1+2": [
+                "[4K] Players 1 and 2",
+                "tests/blocked-hard.json"
+            ],
+            "Defeat Hard Player 1+2": [
+                "[4K] Players 1 and 2",
+                "tests/defeat-hard.json"
+            ],
+            "Demise Player 1+2": [
+                "[4K] Players 1 and 2",
+                "tests/demise.json"
+            ],
+            "God Eater 9K Player 1": [
+                "[9K] Player 1 (Boyfriend)",
+                "tests/god-eater-hard.json"
+            ]
+        },
+        "background": ""
+    },
+    "url_ffmpeg_tutorial": "https://github.com/Corne2Plum3/fnf2osumania/wiki/How-to-install-FFMPEG",
+    "url_github": "https://github.com/Corne2Plum3/fnf2osumania",
+    "url_help": "https://github.com/Corne2Plum3/fnf2osumania/wiki",
+    "verify_inputs": 1
+}
