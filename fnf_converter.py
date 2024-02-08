@@ -340,6 +340,7 @@ class Fnf_chart:
 						j += 1
 				
 				note = note[0:3]  # only keep the 3 first elemnts of the list
+				note[1] = int(note[1])  # force int conversion for the key number
 
   				# If we have less than 3 arguments or the argument [1] (key number isn't valid) the note is ignored
 				if len(note) < 3 or (not is_a_int(note[1])) or note[1] < 0:
