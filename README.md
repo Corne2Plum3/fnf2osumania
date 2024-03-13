@@ -19,7 +19,7 @@ If you don't have this, the program will not work.
 See [Developping](https://github.com/Corne2Plum3/fnf2osumania#developping) because you will need the same requirements.
 
 ## Using it
-You can pick all needed files ![https://github.com/Corne2Plum3/fnf2osumania/releases](here). You should download the last version.
+You can pick all needed files [here](https://github.com/Corne2Plum3/fnf2osumania/releases). You should download the last version.
 
 ### Windows
 
