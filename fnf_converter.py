@@ -2,7 +2,7 @@
 
 from crash_window import Crash_window
 import json
-from math import log
+from math import log, ceil
 import os
 from pydub import AudioSegment
 import traceback
@@ -185,9 +185,9 @@ class Fnf_chart:
 		timing_points = self.optimizeBPMList(self.getBPMList())  # get all points
 		for i in range(len(timing_points)):
 			# red tick (bpm change)
-			osu_file_content += f"{int(timing_points[i][0])+self.offset},{bpmToMs(timing_points[i][1])},{meter},{sample_set},{sample_index},{volume},1,0\n"
+			osu_file_content += f"{ceil(timing_points[i][0])+self.offset},{bpmToMs(timing_points[i][1])},{meter},{sample_set},{sample_index},{volume},1,0\n"
 			# green tick (scroll speed change) (to keep the same scroll speed)
-			osu_file_content += f"{int(timing_points[i][0])+self.offset},{-100*(timing_points[i][1]/self.getBPM())},{meter},{sample_set},{sample_index},{volume},0,0\n"
+			osu_file_content += f"{ceil(timing_points[i][0])+self.offset},{-100*(timing_points[i][1]/self.getBPM())},{meter},{sample_set},{sample_index},{volume},0,0\n"
 
 		# 4. Generate the [HitObjects] section, where they're the notes
 		osu_file_content += "\n[HitObjects]\n"
