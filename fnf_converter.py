@@ -2,7 +2,7 @@
 
 from crash_window import Crash_window
 import json
-from math import log, ceil
+from math import log
 import os
 from pydub import AudioSegment
 import traceback
@@ -224,7 +224,7 @@ class Fnf_chart:
 				if i == 0:  # first note
 					note_type += 4  # add new combo (binary: 0000 0100)
 				# generate the note in the osu file
-				osu_file_content += f"{ceil(notes_list[i][1]/keys_count*512)},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
+				osu_file_content += f"{int(notes_list[i][1]/keys_count*528)},192,{notes_list[i][0]+self.offset},{note_type},0,{sample_set}:0:{sample_index}:{volume}:\n"
 
 			else:  # long/hold note
 				# calculate note_type
@@ -232,7 +232,7 @@ class Fnf_chart:
 				if i == 0:  # first note
 					note_type += 4  # add new combo (binary: 0000 0100)
 				# generate the note in the osu file
-				osu_file_content += f"{ceil(notes_list[i][1]/keys_count*512)},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"
+				osu_file_content += f"{int(notes_list[i][1]/keys_count*528)},192,{notes_list[i][0]+self.offset},{note_type},0,{notes_list[i][0]+notes_list[i][2]+self.offset}:{sample_set}:0:{sample_index}:{volume}:\n"
 		
 		# 5. Create and write in the file
 		with open(f"{path}/{osu_file_name}", "w", encoding="utf-8") as osu_file:
